@@ -16,42 +16,36 @@ const tools = [
     id: "json-formatter",
     title: "JSON Formatter",
     description: "Format, validate, and beautify JSON data directly in your browser",
-    icon: "📝",
     category: "Data"
   },
   {
     id: "base64-encoder",
     title: "Base64 Encoder/Decoder",
     description: "Encode and decode Base64 strings with client-side processing",
-    icon: "🔐",
     category: "Encoding"
   },
   {
     id: "hash-generator",
     title: "Hash Generator",
     description: "Generate MD5, SHA-1, SHA-256 hashes from text input",
-    icon: "🔑",
     category: "Security"
   },
   {
     id: "color-picker",
     title: "Color Picker",
     description: "Convert between HEX, RGB, HSL color formats",
-    icon: "🎨",
     category: "Design"
   },
   {
     id: "text-diff",
     title: "Text Diff",
     description: "Compare two text inputs and highlight differences",
-    icon: "📊",
     category: "Text"
   },
   {
     id: "url-parser",
     title: "URL Parser",
     description: "Parse and decode URLs to inspect components",
-    icon: "🔗",
     category: "Web"
   }
 ];
@@ -95,8 +89,7 @@ export default function Home() {
             {tools.map((tool) => (
               <Card key={tool.id} className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="text-4xl mb-2">{tool.icon}</div>
+                  <div className="flex items-start justify-between mb-2">
                     <span className="text-xs px-2 py-1 bg-muted rounded-full">
                       {tool.category}
                     </span>
@@ -121,21 +114,18 @@ export default function Home() {
         {/* Features Section */}
         <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           <div className="text-center space-y-2">
-            <div className="text-3xl mb-3">🔒</div>
             <h3 className="font-semibold text-lg">Privacy First</h3>
             <p className="text-sm text-muted-foreground">
               All processing happens locally in your browser. Your data never leaves your device.
             </p>
           </div>
           <div className="text-center space-y-2">
-            <div className="text-3xl mb-3">⚡</div>
             <h3 className="font-semibold text-lg">Fast & Offline</h3>
             <p className="text-sm text-muted-foreground">
               No server requests means instant results. Works completely offline.
             </p>
           </div>
           <div className="text-center space-y-2">
-            <div className="text-3xl mb-3">🎯</div>
             <h3 className="font-semibold text-lg">Simple & Clean</h3>
             <p className="text-sm text-muted-foreground">
               Focused tools with clean interfaces. No distractions, just functionality.

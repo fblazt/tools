@@ -1,7 +1,5 @@
 import * as React from "react"
 
-import { SearchForm } from "~/components/search-form"
-import { VersionSwitcher } from "~/components/version-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -17,7 +15,6 @@ import {
 
 // Tools data
 const data = {
-  versions: ["1.0.0"],
   navMain: [
     {
       title: "Data Tools",
@@ -91,11 +88,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <VersionSwitcher
-          versions={data.versions}
-          defaultVersion={data.versions[0]}
-        />
-        <SearchForm />
+        <div className="p-4">
+          <h2 className="text-lg font-semibold">fblazt-tools</h2>
+          <p className="text-sm text-muted-foreground">Client-Side Tools</p>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}
