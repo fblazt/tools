@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router";
 import type { Route } from "./+types/tools.$toolId";
 import { ToolLayout } from "~/components/tool-layout";
 import { QRGenerator } from "~/components/tools/qr-generator";
+import { JWTDecoder } from "~/components/tools/jwt-decoder";
 
 export function meta({ params }: Route.MetaArgs) {
   const toolName = params.toolId
@@ -19,6 +20,10 @@ const toolComponents: Record<string, { component: React.ComponentType; title: st
   "qr-generator": {
     component: QRGenerator,
     title: "QR Code Generator",
+  },
+  "jwt-decoder": {
+    component: JWTDecoder,
+    title: "JWT Decoder",
   },
   // Add more tools here as you create them
   // "json-formatter": {

@@ -46,6 +46,10 @@ const data = {
       url: "#",
       items: [
         {
+          title: "JWT Decoder",
+          url: "/tools/jwt-decoder",
+        },
+        {
           title: "Hash Generator",
           url: "/tools/hash-generator",
         },
