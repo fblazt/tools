@@ -3,6 +3,7 @@ import type { Route } from "./+types/tools.$toolId";
 import { ToolLayout } from "~/components/tool-layout";
 import { QRGenerator } from "~/components/tools/qr-generator";
 import { JWTDecoder } from "~/components/tools/jwt-decoder";
+import { ImageToWebp } from "~/components/tools/image-to-webp";
 
 export function meta({ params }: Route.MetaArgs) {
   const toolName = params.toolId
@@ -24,6 +25,10 @@ const toolComponents: Record<string, { component: React.ComponentType; title: st
   "jwt-decoder": {
     component: JWTDecoder,
     title: "JWT Decoder",
+  },
+  "image-to-webp": {
+    component: ImageToWebp,
+    title: "Image to WebP Converter",
   },
   // Add more tools here as you create them
   // "json-formatter": {

@@ -10,43 +10,25 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-// Sample tools data - you can expand this later
+// Implemented tools
 const tools = [
   {
-    id: "json-formatter",
-    title: "JSON Formatter",
-    description: "Format, validate, and beautify JSON data directly in your browser",
-    category: "Data"
-  },
-  {
-    id: "base64-encoder",
-    title: "Base64 Encoder/Decoder",
-    description: "Encode and decode Base64 strings with client-side processing",
+    id: "qr-generator",
+    title: "QR Code Generator",
+    description: "Generate QR codes from text or URLs instantly in your browser",
     category: "Encoding"
   },
   {
-    id: "hash-generator",
-    title: "Hash Generator",
-    description: "Generate MD5, SHA-1, SHA-256 hashes from text input",
+    id: "jwt-decoder",
+    title: "JWT Decoder",
+    description: "Decode and verify JSON Web Tokens without sending data to servers",
     category: "Security"
   },
   {
-    id: "color-picker",
-    title: "Color Picker",
-    description: "Convert between HEX, RGB, HSL color formats",
+    id: "image-to-webp",
+    title: "Image to WebP Converter",
+    description: "Convert images to WebP format for better compression and quality",
     category: "Design"
-  },
-  {
-    id: "text-diff",
-    title: "Text Diff",
-    description: "Compare two text inputs and highlight differences",
-    category: "Text"
-  },
-  {
-    id: "url-parser",
-    title: "URL Parser",
-    description: "Parse and decode URLs to inspect components",
-    category: "Web"
   }
 ];
 

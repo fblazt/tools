@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useLocation, Link } from "react-router"
 
 import {
   Sidebar,
@@ -17,27 +18,12 @@ import {
 const data = {
   navMain: [
     {
-      title: "Data Tools",
-      url: "#",
-      items: [
-        {
-          title: "JSON Formatter",
-          url: "/tools/json-formatter",
-        },
-      ],
-    },
-    {
       title: "Encoding Tools",
       url: "#",
       items: [
         {
-          title: "Base64 Encoder",
-          url: "/tools/base64-encoder",
-        },
-        {
           title: "QR Code Generator",
           url: "/tools/qr-generator",
-          isActive: true,
         },
       ],
     },
@@ -49,10 +35,6 @@ const data = {
           title: "JWT Decoder",
           url: "/tools/jwt-decoder",
         },
-        {
-          title: "Hash Generator",
-          url: "/tools/hash-generator",
-        },
       ],
     },
     {
@@ -60,28 +42,8 @@ const data = {
       url: "#",
       items: [
         {
-          title: "Color Picker",
-          url: "/tools/color-picker",
-        },
-      ],
-    },
-    {
-      title: "Text Tools",
-      url: "#",
-      items: [
-        {
-          title: "Text Diff",
-          url: "/tools/text-diff",
-        },
-      ],
-    },
-    {
-      title: "Web Tools",
-      url: "#",
-      items: [
-        {
-          title: "URL Parser",
-          url: "/tools/url-parser",
+          title: "Image to WebP Converter",
+          url: "/tools/image-to-webp",
         },
       ],
     },
@@ -89,6 +51,8 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const location = useLocation();
+  
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -106,8 +70,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenu>
                 {item.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <a href={item.url}>{item.title}</a>
+                    <SidebarMenuButton asChild isActive={location.pathname === item.url}>
+                      <Link to={item.url}>{item.title}</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
