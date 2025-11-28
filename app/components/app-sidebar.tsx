@@ -13,6 +13,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "~/components/ui/sidebar"
+import { ThemeToggle } from "~/components/theme-toggle"
 
 // Tools data
 const data = {
@@ -57,8 +58,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar {...props}>
       <SidebarHeader>
         <div className="p-4">
-          <h2 className="text-lg font-semibold">fblazt-tools</h2>
-          <p className="text-sm text-muted-foreground">Client-Side Tools</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold">fblazt-tools</h2>
+              <p className="text-sm text-muted-foreground">Client-Side Tools</p>
+            </div>
+            <ThemeToggle />
+          </div>
         </div>
       </SidebarHeader>
       <SidebarContent>
