@@ -5,6 +5,7 @@ import { QRGenerator } from "~/components/tools/qr-generator";
 import { JWTDecoder } from "~/components/tools/jwt-decoder";
 import { ImageToWebp } from "~/components/tools/image-to-webp";
 import { MarkdownPreviewer } from "~/components/tools/markdown-previewer";
+import { JsonApiTester } from "~/components/tools/json-api-tester";
 
 export function meta({ params }: Route.MetaArgs) {
   const toolName = params.toolId
@@ -34,6 +35,10 @@ const toolComponents: Record<string, { component: React.ComponentType; title: st
   "markdown-previewer": {
     component: MarkdownPreviewer,
     title: "Markdown Previewer",
+  },
+  "json-api-tester": {
+    component: JsonApiTester,
+    title: "JSON API Tester",
   },
   // Add more tools here as you create them
   // "json-formatter": {

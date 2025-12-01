@@ -58,6 +58,16 @@ const data = {
         },
       ],
     },
+    {
+      title: "Development Tools",
+      url: "#",
+      items: [
+        {
+          title: "JSON API Tester",
+          url: "/tools/json-api-tester",
+        },
+      ],
+    },
   ],
 }
 
