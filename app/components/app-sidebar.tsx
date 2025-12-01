@@ -48,6 +48,16 @@ const data = {
         },
       ],
     },
+    {
+      title: "Text Tools",
+      url: "#",
+      items: [
+        {
+          title: "Markdown Previewer",
+          url: "/tools/markdown-previewer",
+        },
+      ],
+    },
   ],
 }
 
