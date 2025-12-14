@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "fblazt-tools - Client-Side Tools Collection" },
+    { title: "Tools - Client-Side Tools Collection" },
     { name: "description", content: "A collection of client-side processing tools for various tasks" },
   ];
 }
@@ -40,7 +40,7 @@ export default function Home() {
         <div className="flex flex-col items-center text-center space-y-8 max-w-3xl mx-auto">
           <div className="space-y-4">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-              fblazt-tools
+              Tools
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground">
               A collection of client-side tools for developers
@@ -53,9 +53,9 @@ export default function Home() {
 
           <div className="flex gap-4">
             <Button size="lg" className="text-base" asChild>
-              <a href="#tools">
+              <Link to="/tools">
                 Explore Tools
-              </a>
+              </Link>
             </Button>
             <Button size="lg" variant="outline" className="text-base" asChild>
               <a href="https://github.com" target="_blank" rel="noopener noreferrer">
