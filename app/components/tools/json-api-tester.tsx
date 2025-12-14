@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
+import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import { Textarea } from "~/components/ui/textarea";
 
 interface Header {
   key: string;
@@ -28,10 +31,10 @@ interface ApiResponse {
 const HTTP_METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"];
 
 const sampleUrls = [
-  "https://jsonplaceholder.typicode.com/posts/1",
-  "https://api.github.com/users/octocat",
-  "https://httpbin.org/get",
-  "https://api.coindesk.com/v1/bpi/currentprice.json"
+  { url: "https://jsonplaceholder.typicode.com/posts/1", label: "JSONPlaceholder" },
+  { url: "https://api.github.com/users/octocat", label: "GitHub API" },
+  { url: "https://httpbin.org/get", label: "HTTPBin" },
+  { url: "https://api.coindesk.com/v1/bpi/currentprice.json", label: "CoinDesk API" }
 ];
 
 export function JsonApiTester() {
@@ -87,7 +90,7 @@ export function JsonApiTester() {
       url,
       timestamp: Date.now()
     };
-    
+
     const updatedHistory = [newEntry, ...history.slice(0, 9)]; // Keep last 10
     setHistory(updatedHistory);
     localStorage.setItem("api-tester-history", JSON.stringify(updatedHistory));
@@ -110,7 +113,7 @@ export function JsonApiTester() {
 
     try {
       const startTime = Date.now();
-      
+
       // Build headers object
       const headersObj: Record<string, string> = {};
       headers.forEach(header => {
@@ -147,7 +150,7 @@ export function JsonApiTester() {
       // Get response data
       const responseText = await response.text();
       let responseData;
-      
+
       try {
         responseData = JSON.parse(responseText);
       } catch {
@@ -219,15 +222,16 @@ export function JsonApiTester() {
           <CardContent className="space-y-4">
             {/* Method and URL */}
             <div className="flex gap-2">
-              <select
-                value={method}
-                onChange={(e) => setMethod(e.target.value)}
-                className="px-3 py-2 border rounded-md bg-background"
-              >
-                {HTTP_METHODS.map(m => (
-                  <option key={m} value={m}>{m}</option>
-                ))}
-              </select>
+              <Select value={method} onValueChange={setMethod}>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {HTTP_METHODS.map(m => (
+                    <SelectItem key={m} value={m}>{m}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <Input
                 placeholder="Enter API URL (e.g., https://api.example.com/data)"
                 value={url}
@@ -240,14 +244,14 @@ export function JsonApiTester() {
             <div className="space-y-2">
               <Label>Sample URLs:</Label>
               <div className="flex flex-wrap gap-2">
-                {sampleUrls.map(sampleUrl => (
+                {sampleUrls.map(sample => (
                   <Button
-                    key={sampleUrl}
+                    key={sample.url}
                     variant="outline"
                     size="sm"
-                    onClick={() => setUrl(sampleUrl)}
+                    onClick={() => setUrl(sample.url)}
                   >
-                    Use
+                    {sample.label}
                   </Button>
                 ))}
               </div>
@@ -290,8 +294,8 @@ export function JsonApiTester() {
             {["POST", "PUT", "PATCH"].includes(method) && (
               <div className="space-y-2">
                 <Label>Request Body (JSON)</Label>
-                <textarea
-                  className="w-full h-32 p-3 border rounded-md font-mono text-sm bg-muted/30"
+                <Textarea
+                  className="h-32 font-mono text-sm"
                   placeholder='{"key": "value"}'
                   value={requestBody}
                   onChange={(e) => setRequestBody(e.target.value)}
@@ -304,8 +308,8 @@ export function JsonApiTester() {
             )}
 
             {/* Send Button */}
-            <Button 
-              onClick={sendRequest} 
+            <Button
+              onClick={sendRequest}
               disabled={loading}
               className="w-full"
             >
@@ -406,9 +410,9 @@ export function JsonApiTester() {
                   onClick={() => loadFromHistory(entry)}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="font-mono text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                    <Badge variant="secondary" className="font-mono text-xs">
                       {entry.method}
-                    </span>
+                    </Badge>
                     <span className="font-mono text-sm truncate max-w-md">
                       {entry.url}
                     </span>
@@ -434,7 +438,7 @@ export function JsonApiTester() {
         </CardHeader>
         <CardContent className="space-y-4 text-sm text-muted-foreground">
           <p>
-            This tool allows you to test REST APIs with JSON payloads directly from your browser. 
+            This tool allows you to test REST APIs with JSON payloads directly from your browser.
             All requests are made using the native fetch API, ensuring maximum compatibility and performance.
           </p>
           <div className="space-y-2">
@@ -458,8 +462,8 @@ export function JsonApiTester() {
               <li>Checking API performance</li>
             </ul>
           </div>
-          <p className="text-xs italic">
-            ⚠️ Be cautious when testing APIs with authentication tokens or sensitive data. 
+          <p className="text-xs italic flex items-center gap-2">
+            Be cautious when testing APIs with authentication tokens or sensitive data.
             Request history is stored locally in your browser.
           </p>
         </CardContent>

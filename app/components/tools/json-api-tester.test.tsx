@@ -29,7 +29,7 @@ describe("JsonApiTester", () => {
     expect(screen.getByText("JSON API Tester")).toBeInTheDocument();
     expect(screen.getByText("Request")).toBeInTheDocument();
     expect(screen.getByText("Response")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("GET")).toBeInTheDocument();
+    expect(screen.getByText("GET")).toBeInTheDocument(); // Select component shows the value as text
     expect(screen.getByPlaceholderText(/Enter API URL/)).toBeInTheDocument();
   });
 
@@ -38,9 +38,11 @@ describe("JsonApiTester", () => {
     
     expect(screen.getByText("Sample URLs:")).toBeInTheDocument();
     
-    // Should have multiple "Use" buttons for sample URLs
-    const useButtons = screen.getAllByText("Use");
-    expect(useButtons.length).toBeGreaterThan(0);
+    // Should have sample URL buttons with descriptive labels
+    expect(screen.getByText("JSONPlaceholder")).toBeInTheDocument();
+    expect(screen.getByText("GitHub API")).toBeInTheDocument();
+    expect(screen.getByText("HTTPBin")).toBeInTheDocument();
+    expect(screen.getByText("CoinDesk API")).toBeInTheDocument();
   });
 
   it("allows adding and removing headers", async () => {
@@ -70,8 +72,11 @@ describe("JsonApiTester", () => {
     // Initially should not show request body for GET
     expect(screen.queryByPlaceholderText(/"key": "value"/)).not.toBeInTheDocument();
     
-    const methodSelect = screen.getByDisplayValue("GET");
-    await user.selectOptions(methodSelect, "POST");
+    // Click the select trigger and then click POST option
+    const selectTrigger = screen.getByRole("combobox");
+    await user.click(selectTrigger);
+    const postOption = screen.getByText("POST");
+    await user.click(postOption);
     
     // Should show request body for POST
     expect(screen.getByPlaceholderText(/"key": "value"/)).toBeInTheDocument();
@@ -210,16 +215,16 @@ describe("JsonApiTester", () => {
     expect(screen.getByText("https://api.example.com/test")).toBeInTheDocument();
   });
 
-  it("loads sample URL when clicking Use button", async () => {
+  it("loads sample URL when clicking sample button", async () => {
     const user = userEvent.setup();
     
     render(<JsonApiTester />);
     
-    const useButtons = screen.getAllByText("Use");
-    await user.click(useButtons[0]);
+    const jsonPlaceholderButton = screen.getByText("JSONPlaceholder");
+    await user.click(jsonPlaceholderButton);
     
     const urlInput = screen.getByPlaceholderText(/Enter API URL/) as HTMLInputElement;
-    expect(urlInput.value).toContain("https://");
+    expect(urlInput.value).toBe("https://jsonplaceholder.typicode.com/posts/1");
   });
 
   it("copies response body to clipboard", async () => {

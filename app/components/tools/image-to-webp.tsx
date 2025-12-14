@@ -3,6 +3,7 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { Slider } from "~/components/ui/slider";
 
 interface ConvertedImage {
   originalName: string;
@@ -42,14 +43,14 @@ export function ImageToWebp() {
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
-        
+
         canvas.toBlob(
           (blob) => {
             if (!blob) {
               reject(new Error('Failed to convert image'));
               return;
             }
-            
+
             const webpUrl = URL.createObjectURL(blob);
             resolve({
               originalName: file.name,
@@ -71,7 +72,7 @@ export function ImageToWebp() {
 
   const handleFiles = useCallback(async (files: FileList) => {
     setIsProcessing(true);
-    const imageFiles = Array.from(files).filter(file => 
+    const imageFiles = Array.from(files).filter(file =>
       file.type.startsWith('image/')
     );
 
@@ -157,23 +158,21 @@ export function ImageToWebp() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="quality">Quality: {quality}%</Label>
-            <Input
+            <Slider
               id="quality"
-              type="range"
-              min="10"
-              max="100"
-              value={quality}
-              onChange={(e) => setQuality(Number(e.target.value))}
+              min={10}
+              max={100}
+              value={[quality]}
+              onValueChange={(value) => setQuality(value[0])}
               className="w-full"
             />
           </div>
 
           <div
-            className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-              isDragging
+            className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${isDragging
                 ? 'border-primary bg-primary/5'
                 : 'border-muted-foreground/25 hover:border-primary/50'
-            }`}
+              }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
@@ -269,6 +268,43 @@ export function ImageToWebp() {
           </CardContent>
         </Card>
       )}
+
+      {/* Info Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>About WebP Format</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 text-sm text-muted-foreground">
+          <p>
+            WebP is a modern image format developed by Google that provides superior compression and quality
+            characteristics compared to traditional formats like JPEG and PNG. It supports both lossy and lossless
+            compression, as well as alpha transparency and animation.
+          </p>
+          <div className="space-y-2">
+            <h4 className="font-semibold text-foreground">Key Benefits:</h4>
+            <ul className="list-disc list-inside space-y-1 ml-2">
+              <li>Smaller file sizes with equivalent quality</li>
+              <li>Better compression for web images</li>
+              <li>Supports transparency like PNG</li>
+              <li>Supports animation like GIF</li>
+              <li>Widely supported by modern browsers</li>
+            </ul>
+          </div>
+          <div className="space-y-2">
+            <h4 className="font-semibold text-foreground">Common Use Cases:</h4>
+            <ul className="list-disc list-inside space-y-1 ml-2">
+              <li>Website optimization for faster loading</li>
+              <li>Web application image assets</li>
+              <li>E-commerce product images</li>
+              <li>Social media content</li>
+              <li>Email newsletters and marketing</li>
+            </ul>
+          </div>
+          <p className="text-xs italic flex items-center gap-2">
+            WebP conversion is performed locally in your browser. Your images are never uploaded to external servers.
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 }

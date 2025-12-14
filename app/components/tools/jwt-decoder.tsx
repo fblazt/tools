@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
+import { Textarea } from "~/components/ui/textarea";
 
 interface JWTPayload {
   [key: string]: any;
@@ -101,9 +102,9 @@ export function JWTDecoder() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="jwt-input">JWT Token</Label>
-            <textarea
+            <Textarea
               id="jwt-input"
-              className="w-full min-h-[100px] p-3 border rounded-md resize-none font-mono text-sm"
+              className="min-h-[100px] font-mono text-sm resize-none"
               placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
               value={jwtInput}
               onChange={(e) => setJwtInput(e.target.value)}
@@ -243,9 +244,8 @@ export function JWTDecoder() {
               <li><code>nbf</code> - Not valid before</li>
             </ul>
           </div>
-          <p className="text-xs italic">
-            ⚠️ Never decode untrusted JWT tokens and use the data without proper verification. 
-            This tool only decodes the token - it doesn't verify the signature.
+          <p className="text-xs italic flex items-center gap-2">
+            Never decode untrusted JWT tokens and use the data without proper verification.
           </p>
         </CardContent>
       </Card>

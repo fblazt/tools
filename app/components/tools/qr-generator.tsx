@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { HexColorPicker } from "react-colorful";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
+import { Slider } from "~/components/ui/slider";
 
 export function QRGenerator() {
   const [text, setText] = useState("https://example.com");
@@ -88,14 +91,14 @@ export function QRGenerator() {
             {/* Size Input */}
             <div className="space-y-2">
               <Label htmlFor="size">Size (px): {size}</Label>
-              <Input
+              <Slider
                 id="size"
-                type="range"
-                min="128"
-                max="512"
-                step="32"
-                value={size}
-                onChange={(e) => setSize(Number(e.target.value))}
+                min={128}
+                max={512}
+                step={32}
+                value={[size]}
+                onValueChange={(value) => setSize(value[0])}
+                className="w-full"
               />
               <p className="text-xs text-muted-foreground">
                 Adjust the size of the QR code (128-512 pixels)
@@ -107,13 +110,17 @@ export function QRGenerator() {
               <div className="space-y-2">
                 <Label htmlFor="fgColor">Foreground Color</Label>
                 <div className="flex gap-2">
-                  <Input
-                    id="fgColor"
-                    type="color"
-                    value={fgColor}
-                    onChange={(e) => setFgColor(e.target.value)}
-                    className="w-16 h-10 cursor-pointer"
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <div
+                        className="w-16 h-10 rounded-md border-2 border-input cursor-pointer"
+                        style={{ backgroundColor: fgColor }}
+                      />
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-3">
+                      <HexColorPicker color={fgColor} onChange={setFgColor} />
+                    </PopoverContent>
+                  </Popover>
                   <Input
                     type="text"
                     value={fgColor}
@@ -126,13 +133,17 @@ export function QRGenerator() {
               <div className="space-y-2">
                 <Label htmlFor="bgColor">Background Color</Label>
                 <div className="flex gap-2">
-                  <Input
-                    id="bgColor"
-                    type="color"
-                    value={bgColor}
-                    onChange={(e) => setBgColor(e.target.value)}
-                    className="w-16 h-10 cursor-pointer"
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <div
+                        className="w-16 h-10 rounded-md border-2 border-input cursor-pointer"
+                        style={{ backgroundColor: bgColor }}
+                      />
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-3">
+                      <HexColorPicker color={bgColor} onChange={setBgColor} />
+                    </PopoverContent>
+                  </Popover>
                   <Input
                     type="text"
                     value={bgColor}

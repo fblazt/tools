@@ -4,6 +4,7 @@ import remarkGfm from "remark-gfm";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
+import { Textarea } from "~/components/ui/textarea";
 
 const sampleMarkdown = `# Welcome to Markdown Previewer
 
@@ -118,9 +119,9 @@ export function MarkdownPreviewer() {
             <div className="space-y-2">
               <Label htmlFor="markdown-input">Markdown Content</Label>
               <div className="relative">
-                <textarea
+                <Textarea
                   id="markdown-input"
-                  className="w-full h-[600px] p-4 border rounded-md resize-none font-mono text-sm bg-muted/30"
+                  className="h-[600px] font-mono text-sm resize-none"
                   placeholder="Enter your markdown here..."
                   value={markdown}
                   onChange={(e) => setMarkdown(e.target.value)}
