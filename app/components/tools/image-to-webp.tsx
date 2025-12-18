@@ -140,9 +140,9 @@ export function ImageToWebp() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold">Image to WebP Converter</h1>
+    <div className="max-w-6xl mx-auto space-y-6">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Image to WebP Converter</h1>
         <p className="text-muted-foreground">
           Convert your images to WebP format for better compression and quality
         </p>
