@@ -1,18 +1,40 @@
-# Welcome to React Router!
+# Tools
 
-A modern, production-ready template for building full-stack React applications using React Router.
+A collection of client-side developer tools built with React Router v7. All processing happens locally in your browser - no data is sent to external servers, ensuring privacy and security.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## Tools
+
+- **Encoding Tools**
+  - QR Code Generator - Create customizable QR codes with adjustable size and colors
+
+- **Security Tools**
+  - JWT Decoder - Decode and inspect JSON Web Tokens with expiration checking
+
+- **Design Tools**
+  - Image to WebP Converter - Convert images to WebP format with quality control
+
+- **Text Tools**
+  - Markdown Previewer - Preview and render Markdown with GitHub Flavored Markdown support
+
+- **Development Tools**
+  - JSON API Tester - Test REST APIs with custom headers, methods, and JSON payloads
+
+## Tech Stack
+
+- React 19 with React Router v7 (client-side)
+- TypeScript with strict mode
+- Tailwind CSS v4 with CSS variables
+- shadcn/ui components (Radix UI + Tailwind)
+- Vitest + React Testing Library
 
 ## Features
 
-- Server-side rendering
-- Hot Module Replacement (HMR)
-- Asset bundling and optimization
-- Data loading and mutations
-- TypeScript by default
-- TailwindCSS for styling
-- [React Router docs](https://reactrouter.com/)
+- 🔒 All tools run entirely in the browser - no server uploads
+- 🌙 Dark/light theme support with persistent preference
+- 📱 Responsive design with mobile-friendly sidebar navigation
+- 🔍 Built-in tool search functionality
+- 🐳 Docker support for containerized deployment
+- ✅ Comprehensive unit tests
 
 ## Getting Started
 
@@ -26,13 +48,35 @@ npm install
 
 ### Development
 
-Start the development server with HMR:
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+Open http://localhost:5173 to start using the tools.
+
+### Type Checking
+
+Run TypeScript type checking:
+
+```bash
+npm run typecheck
+```
+
+### Testing
+
+Run the unit tests:
+
+```bash
+npm test
+```
+
+Run tests with the Vitest UI:
+
+```bash
+npm run test:ui
+```
 
 ## Building for Production
 
@@ -42,46 +86,10 @@ Create a production build:
 npm run build
 ```
 
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
+Serve the production build:
 
 ```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+npm start
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with React Router.
+Built with [React Router](https://reactrouter.com/).
