@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
@@ -48,7 +48,7 @@ export function JsonApiTester() {
   const [history, setHistory] = useState<RequestHistory[]>([]);
 
   // Load history from localStorage on mount
-  useState(() => {
+  useEffect(() => {
     const savedHistory = localStorage.getItem("api-tester-history");
     if (savedHistory) {
       try {
@@ -57,7 +57,7 @@ export function JsonApiTester() {
         console.error("Failed to load history:", e);
       }
     }
-  });
+  }, []);
 
   const addHeader = () => {
     setHeaders([...headers, { key: "", value: "" }]);

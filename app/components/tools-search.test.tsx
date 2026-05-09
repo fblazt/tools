@@ -27,7 +27,11 @@ describe("ToolsSearch", () => {
 
     expect(screen.getByLabelText("Search tools (⌘K)")).toBeInTheDocument();
     expect(screen.getByText("Search tools...")).toBeInTheDocument();
-    expect(screen.getByText("⌘K")).toBeInTheDocument();
+    
+    // Check for the keyboard shortcut components separately
+    expect(screen.getByText("K")).toBeInTheDocument();
+    const searchButton = screen.getByRole("button", { name: /search tools/i });
+    expect(searchButton.querySelector("svg.lucide-command")).toBeInTheDocument();
   });
 
   it("opens command palette when button is clicked", async () => {
