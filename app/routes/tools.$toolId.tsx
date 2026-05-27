@@ -23,6 +23,9 @@ export function meta({ params }: Route.MetaArgs) {
   return [
     { title: `${toolName} - Tools` },
     { name: "description", content: `Use our ${toolName} tool for client-side processing` },
+    { property: "og:title", content: `${toolName} - Tools` },
+    { property: "og:description", content: `Use our ${toolName} tool — runs entirely in your browser, no data sent to servers` },
+    { property: "og:type", content: "website" },
   ];
 }
 

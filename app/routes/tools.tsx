@@ -9,6 +9,9 @@ export function meta({}: Route.MetaArgs) {
   return [
     { title: "Tools - Client-Side Tools Collection" },
     { name: "description", content: "A collection of client-side developer tools" },
+    { property: "og:title", content: "Tools - Client-Side Tools Collection" },
+    { property: "og:description", content: "A collection of privacy-focused developer tools that run entirely in your browser" },
+    { property: "og:type", content: "website" },
   ];
 }
 
