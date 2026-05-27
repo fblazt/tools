@@ -1,4 +1,6 @@
 import { lazy, type ComponentType } from "react";
+import type { LucideIcon } from "lucide-react";
+import { QrCode, Shield, Image, FileText, Globe } from "lucide-react";
 
 export interface ToolDefinition {
   id: string;
@@ -6,6 +8,7 @@ export interface ToolDefinition {
   description: string;
   category: string;
   keywords: string[];
+  icon: LucideIcon;
   component: React.LazyExoticComponent<ComponentType>;
 }
 
@@ -21,6 +24,7 @@ export const tools: ToolDefinition[] = [
     description: "Generate QR codes from text or URLs",
     category: "Encoding Tools",
     keywords: ["qr", "code", "generator", "barcode", "scan"],
+    icon: QrCode,
     component: lazy(() =>
       import("~/components/tools/qr-generator").then((m) => ({ default: m.QRGenerator }))
     ),
@@ -31,6 +35,7 @@ export const tools: ToolDefinition[] = [
     description: "Decode and verify JSON Web Tokens",
     category: "Security Tools",
     keywords: ["jwt", "token", "decoder", "json", "web", "token"],
+    icon: Shield,
     component: lazy(() =>
       import("~/components/tools/jwt-decoder").then((m) => ({ default: m.JWTDecoder }))
     ),
@@ -41,6 +46,7 @@ export const tools: ToolDefinition[] = [
     description: "Convert images to WebP format",
     category: "Design Tools",
     keywords: ["image", "webp", "converter", "format", "picture", "photo"],
+    icon: Image,
     component: lazy(() =>
       import("~/components/tools/image-to-webp").then((m) => ({ default: m.ImageToWebp }))
     ),
@@ -51,6 +57,7 @@ export const tools: ToolDefinition[] = [
     description: "Preview Markdown text with live formatting",
     category: "Text Tools",
     keywords: ["markdown", "preview", "md", "text", "formatting"],
+    icon: FileText,
     component: lazy(() =>
       import("~/components/tools/markdown-previewer").then((m) => ({
         default: m.MarkdownPreviewer,
@@ -63,6 +70,7 @@ export const tools: ToolDefinition[] = [
     description: "Test REST APIs with JSON payloads",
     category: "Development Tools",
     keywords: ["api", "test", "rest", "json", "http", "request"],
+    icon: Globe,
     component: lazy(() =>
       import("~/components/tools/json-api-tester").then((m) => ({ default: m.JsonApiTester }))
     ),

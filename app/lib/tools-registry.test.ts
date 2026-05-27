@@ -13,6 +13,7 @@ describe("tools-registry", () => {
         expect(tool.description).toBeTruthy();
         expect(tool.category).toBeTruthy();
         expect(tool.keywords.length).toBeGreaterThan(0);
+        expect(tool.icon).toBeDefined();
         expect(tool.component).toBeDefined();
       }
     });
