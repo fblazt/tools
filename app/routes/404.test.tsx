@@ -1,0 +1,40 @@
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router";
+import NotFound from "./404";
+
+beforeAll(() => {
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    value: vi.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+});
+
+describe("404 page", () => {
+  it("renders 404 message", () => {
+    render(
+      <MemoryRouter>
+        <NotFound />
+      </MemoryRouter>
+    );
+    expect(screen.getByText("404")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Page Not Found" })).toBeInTheDocument();
+  });
+
+  it("has a link to go home", () => {
+    render(
+      <MemoryRouter>
+        <NotFound />
+      </MemoryRouter>
+    );
+    expect(screen.getByRole("link", { name: /go home/i })).toHaveAttribute("href", "/");
+  });
+});
