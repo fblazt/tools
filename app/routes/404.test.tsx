@@ -18,23 +18,23 @@ beforeAll(() => {
   });
 });
 
+function renderNotFound() {
+  return render(
+    <MemoryRouter>
+      <NotFound />
+    </MemoryRouter>
+  );
+}
+
 describe("404 page", () => {
   it("renders 404 message", () => {
-    render(
-      <MemoryRouter>
-        <NotFound />
-      </MemoryRouter>
-    );
+    renderNotFound();
     expect(screen.getByText("404")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Page Not Found" })).toBeInTheDocument();
   });
 
   it("has a link to go home", () => {
-    render(
-      <MemoryRouter>
-        <NotFound />
-      </MemoryRouter>
-    );
+    renderNotFound();
     expect(screen.getByRole("link", { name: /go home/i })).toHaveAttribute("href", "/");
   });
 });

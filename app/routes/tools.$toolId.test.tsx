@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router";
+import { SidebarProvider } from "~/components/ui/sidebar";
 import ToolPage from "./tools.$toolId";
 
 beforeAll(() => {
@@ -21,9 +22,11 @@ beforeAll(() => {
 function renderToolRoute(toolId: string) {
   return render(
     <MemoryRouter initialEntries={[`/tools/${toolId}`]}>
-      <Routes>
-        <Route path="/tools/:toolId" element={<ToolPage />} />
-      </Routes>
+      <SidebarProvider>
+        <Routes>
+          <Route path="/tools/:toolId" element={<ToolPage />} />
+        </Routes>
+      </SidebarProvider>
     </MemoryRouter>
   );
 }
