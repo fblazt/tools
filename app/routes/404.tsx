@@ -3,6 +3,8 @@ import type { Route } from "./+types/404";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { ToolsSearch } from "~/components/tools-search";
+import { SidebarTrigger } from "~/components/ui/sidebar";
+import { Separator } from "~/components/ui/separator";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -13,15 +15,16 @@ export function meta({}: Route.MetaArgs) {
 
 export default function NotFound() {
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Page Not Found</h1>
+    <>
+      <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+        <SidebarTrigger className="-ml-1" />
+        <Separator orientation="vertical" className="mr-2 h-4" />
+        <div className="flex items-center justify-between flex-1">
+          <h1 className="text-lg font-semibold">Page Not Found</h1>
+          <ToolsSearch />
         </div>
-        <ToolsSearch />
-      </div>
-      
-      <div className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-6">
+      </header>
+      <div className="flex flex-1 flex-col items-center justify-center min-h-[50vh] p-4">
         <Card className="max-w-md w-full">
           <CardHeader className="text-center">
             <CardTitle className="text-6xl font-bold text-muted-foreground">404</CardTitle>
@@ -33,16 +36,6 @@ export default function NotFound() {
             <p className="text-muted-foreground">
               The page you're looking for doesn't exist. It might have been moved, deleted, or you entered the wrong URL.
             </p>
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Here are some things you can try:
-              </p>
-              <ul className="text-sm text-muted-foreground text-left space-y-1">
-                <li>• Check the URL for typos</li>
-                <li>• Go back to the previous page</li>
-                <li>• Use the sidebar to navigate to available tools</li>
-              </ul>
-            </div>
             <div className="flex gap-2 pt-4">
               <Button asChild className="flex-1">
                 <Link to="/">
@@ -56,6 +49,6 @@ export default function NotFound() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </>
   );
 }

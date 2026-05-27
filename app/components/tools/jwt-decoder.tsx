@@ -20,6 +20,13 @@ export function JWTDecoder() {
   const [jwtInput, setJwtInput] = useState("");
   const [decoded, setDecoded] = useState<DecodedJWT | null>(null);
 
+  const decodeBase64Url = (str: string): string => {
+    const base64 = str.replace(/-/g, "+").replace(/_/g, "/");
+    const binary = atob(base64);
+    const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
+  };
+
   const decodeJWT = (token: string): DecodedJWT => {
     try {
       const parts = token.split(".");
@@ -33,8 +40,8 @@ export function JWTDecoder() {
         };
       }
 
-      const header = JSON.parse(atob(parts[0].replace(/-/g, "+").replace(/_/g, "/")));
-      const payload = JSON.parse(atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")));
+      const header = JSON.parse(decodeBase64Url(parts[0]));
+      const payload = JSON.parse(decodeBase64Url(parts[1]));
       const signature = parts[2];
 
       return {
@@ -72,14 +79,24 @@ export function JWTDecoder() {
     navigator.clipboard.writeText(text);
   };
 
+  const formatDuration = (totalMinutes: number): string => {
+    if (totalMinutes < 60) return `${totalMinutes} minute${totalMinutes !== 1 ? "s" : ""}`;
+    if (totalMinutes < 1440) {
+      const hours = Math.floor(totalMinutes / 60);
+      return `${hours} hour${hours !== 1 ? "s" : ""}`;
+    }
+    const days = Math.floor(totalMinutes / 1440);
+    return `${days} day${days !== 1 ? "s" : ""}`;
+  };
+
   const getExpirationStatus = (exp: number) => {
     const now = Math.floor(Date.now() / 1000);
     if (exp > now) {
       const minutesLeft = Math.floor((exp - now) / 60);
-      return { status: "valid", text: `Valid for ${minutesLeft} minutes`, color: "text-green-600" };
+      return { status: "valid", text: `Valid for ${formatDuration(minutesLeft)}`, color: "text-green-600 dark:text-green-400" };
     } else {
       const minutesExpired = Math.floor((now - exp) / 60);
-      return { status: "expired", text: `Expired ${minutesExpired} minutes ago`, color: "text-red-600" };
+      return { status: "expired", text: `Expired ${formatDuration(minutesExpired)} ago`, color: "text-red-600 dark:text-red-400" };
     }
   };
 
@@ -171,14 +188,15 @@ export function JWTDecoder() {
               {decoded.isValid ? (
                 <div className="space-y-4">
                   {/* Expiration Status */}
-                  {decoded.payload.exp && (
-                    <div className="p-3 bg-muted rounded-md">
-                      <div className="text-sm font-medium">Token Status</div>
-                      <div className={getExpirationStatus(decoded.payload.exp).color}>
-                        {getExpirationStatus(decoded.payload.exp).text}
+                  {decoded.payload.exp && (() => {
+                    const expStatus = getExpirationStatus(decoded.payload.exp);
+                    return (
+                      <div className="p-3 bg-muted rounded-md">
+                        <div className="text-sm font-medium">Token Status</div>
+                        <div className={expStatus.color}>{expStatus.text}</div>
                       </div>
-                    </div>
-                  )}
+                    );
+                  })()}
                   <pre className="bg-muted p-4 rounded-md overflow-x-auto text-sm">
                     {formatJSON(decoded.payload)}
                   </pre>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
@@ -46,17 +46,23 @@ export function JsonApiTester() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<RequestHistory[]>([]);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Load history from localStorage on mount
   useEffect(() => {
     const savedHistory = localStorage.getItem("api-tester-history");
     if (savedHistory) {
       try {
-        setHistory(JSON.parse(savedHistory));
+        const parsed = JSON.parse(savedHistory);
+        if (Array.isArray(parsed)) setHistory(parsed);
       } catch (e) {
         console.error("Failed to load history:", e);
       }
     }
+  }, []);
+
+  useEffect(() => {
+    return () => { abortControllerRef.current?.abort(); };
   }, []);
 
   const addHeader = () => {
@@ -107,6 +113,10 @@ export function JsonApiTester() {
       return;
     }
 
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     setLoading(true);
     setError(null);
     setResponse(null);
@@ -130,6 +140,7 @@ export function JsonApiTester() {
       const fetchOptions: RequestInit = {
         method,
         headers: headersObj,
+        signal: controller.signal,
       };
 
       // Add body for methods that support it
@@ -170,6 +181,7 @@ export function JsonApiTester() {
       saveToHistory(method, url);
 
     } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
       setError(err instanceof Error ? err.message : "Request failed");
     } finally {
       setLoading(false);
@@ -187,11 +199,11 @@ export function JsonApiTester() {
   };
 
   const getStatusColor = (status: number) => {
-    if (status >= 200 && status < 300) return "text-green-600";
-    if (status >= 300 && status < 400) return "text-yellow-600";
-    if (status >= 400 && status < 500) return "text-orange-600";
-    if (status >= 500) return "text-red-600";
-    return "text-gray-600";
+    if (status >= 200 && status < 300) return "text-green-600 dark:text-green-400";
+    if (status >= 300 && status < 400) return "text-yellow-600 dark:text-yellow-400";
+    if (status >= 400 && status < 500) return "text-orange-600 dark:text-orange-400";
+    if (status >= 500) return "text-red-600 dark:text-red-400";
+    return "text-muted-foreground";
   };
 
   const formatJson = (obj: any): string => {
@@ -318,7 +330,7 @@ export function JsonApiTester() {
 
             {/* Error Display */}
             {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-700">
+              <div className="p-3 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-md text-red-700 dark:text-red-300">
                 <strong>Error:</strong> {error}
               </div>
             )}
@@ -353,7 +365,7 @@ export function JsonApiTester() {
                   <div className="max-h-32 overflow-auto border rounded-md p-2 bg-muted/30">
                     {Object.entries(response.headers).map(([key, value]) => (
                       <div key={key} className="text-sm font-mono">
-                        <span className="text-blue-600">{key}:</span> {value}
+                        <span className="text-blue-600 dark:text-blue-400">{key}:</span> {value}
                       </div>
                     ))}
                   </div>

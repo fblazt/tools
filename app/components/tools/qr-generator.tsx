@@ -27,7 +27,7 @@ export function QRGenerator() {
     canvas.height = size;
 
     img.onload = () => {
-      ctx?.drawImage(img, 0, 0);
+      ctx?.drawImage(img, 0, 0, size, size);
       const pngFile = canvas.toDataURL("image/png");
 
       const downloadLink = document.createElement("a");
@@ -36,7 +36,14 @@ export function QRGenerator() {
       downloadLink.click();
     };
 
-    img.src = "data:image/svg+xml;base64," + btoa(svgData);
+    img.onerror = () => {
+      alert("Failed to generate PNG. Try a simpler input.");
+    };
+
+    const encoded = btoa(
+      Array.from(new TextEncoder().encode(svgData), (b) => String.fromCharCode(b)).join("")
+    );
+    img.src = "data:image/svg+xml;base64," + encoded;
   };
 
   const downloadSVG = () => {
@@ -190,11 +197,12 @@ export function QRGenerator() {
                 <QRCodeSVG
                   id="qr-code"
                   value={text}
-                  size={Math.min(size, 400)}
+                  size={size}
                   bgColor={bgColor}
                   fgColor={fgColor}
                   level="H"
                   includeMargin
+                  style={{ maxWidth: "100%", height: "auto" }}
                 />
               ) : (
                 <div className="text-center text-muted-foreground">

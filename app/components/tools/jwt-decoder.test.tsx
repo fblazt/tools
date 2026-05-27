@@ -161,8 +161,8 @@ describe("JWTDecoder", () => {
     await user.click(decodeButton);
     
     expect(screen.getByText("Token Status")).toBeInTheDocument();
-    expect(screen.getByText(/Valid for \d+ minutes/)).toBeInTheDocument();
-    expect(screen.getByText(/Valid for \d+ minutes/)).toHaveClass("text-green-600");
+    expect(screen.getByText(/Valid for \d+ (minute|minutes|hour|hours|day|days)/)).toBeInTheDocument();
+    expect(screen.getByText(/Valid for \d+ (minute|minutes|hour|hours|day|days)/)).toHaveClass("text-green-600");
   });
 
   it("shows expiration status for expired token", async () => {
@@ -179,8 +179,8 @@ describe("JWTDecoder", () => {
     await user.click(decodeButton);
     
     expect(screen.getByText("Token Status")).toBeInTheDocument();
-    expect(screen.getByText(/Expired \d+ minutes ago/)).toBeInTheDocument();
-    expect(screen.getByText(/Expired \d+ minutes ago/)).toHaveClass("text-red-600");
+    expect(screen.getByText(/Expired \d+ (minute|minutes|hour|hours|day|days) ago/)).toBeInTheDocument();
+    expect(screen.getByText(/Expired \d+ (minute|minutes|hour|hours|day|days) ago/)).toHaveClass("text-red-600");
   });
 
   it("does not show expiration status for token without exp claim", async () => {

@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
+import { SidebarProvider } from "~/components/ui/sidebar";
 import NotFound from "./404";
 
 beforeAll(() => {
@@ -21,7 +22,9 @@ beforeAll(() => {
 function renderNotFound() {
   return render(
     <MemoryRouter>
-      <NotFound />
+      <SidebarProvider>
+        <NotFound />
+      </SidebarProvider>
     </MemoryRouter>
   );
 }

@@ -1,11 +1,14 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Slider } from "~/components/ui/slider";
 
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+
 interface ConvertedImage {
+  id: string;
   originalName: string;
   originalSize: number;
   webpUrl: string;
@@ -19,6 +22,13 @@ export function ImageToWebp() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    return () => {
+      images.forEach(image => URL.revokeObjectURL(image.webpUrl));
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
@@ -39,7 +49,10 @@ export function ImageToWebp() {
         return;
       }
 
+      const srcUrl = URL.createObjectURL(file);
+
       img.onload = () => {
+        URL.revokeObjectURL(srcUrl);
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
@@ -53,6 +66,7 @@ export function ImageToWebp() {
 
             const webpUrl = URL.createObjectURL(blob);
             resolve({
+              id: `${file.name}-${Date.now()}-${Math.random().toString(36).slice(2)}`,
               originalName: file.name,
               originalSize: file.size,
               webpUrl,
@@ -65,15 +79,18 @@ export function ImageToWebp() {
         );
       };
 
-      img.onerror = () => reject(new Error('Failed to load image'));
-      img.src = URL.createObjectURL(file);
+      img.onerror = () => {
+        URL.revokeObjectURL(srcUrl);
+        reject(new Error('Failed to load image'));
+      };
+      img.src = srcUrl;
     });
   }, [quality]);
 
   const handleFiles = useCallback(async (files: FileList) => {
     setIsProcessing(true);
     const imageFiles = Array.from(files).filter(file =>
-      file.type.startsWith('image/')
+      file.type.startsWith('image/') && file.size <= MAX_FILE_SIZE
     );
 
     try {
@@ -134,9 +151,12 @@ export function ImageToWebp() {
     setImages([]);
   };
 
-  const removeImage = (index: number) => {
-    URL.revokeObjectURL(images[index].webpUrl);
-    setImages(prev => prev.filter((_, i) => i !== index));
+  const removeImage = (id: string) => {
+    setImages(prev => {
+      const image = prev.find(img => img.id === id);
+      if (image) URL.revokeObjectURL(image.webpUrl);
+      return prev.filter(img => img.id !== id);
+    });
   };
 
   return (
@@ -226,8 +246,8 @@ export function ImageToWebp() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {images.map((image, index) => (
-                <div key={index} className="border rounded-lg p-4 space-y-3">
+              {images.map((image) => (
+                <div key={image.id} className="border rounded-lg p-4 space-y-3">
                   <div className="aspect-video bg-muted rounded-md overflow-hidden">
                     <img
                       src={image.webpUrl}
@@ -240,9 +260,10 @@ export function ImageToWebp() {
                     <div className="text-xs text-muted-foreground space-y-1">
                       <div>Original: {formatFileSize(image.originalSize)}</div>
                       <div>WebP: {formatFileSize(image.webpSize)}</div>
-                      <div className="font-medium text-green-600">
-                        Saved: {formatFileSize(image.originalSize - image.webpSize)} (
-                        {Math.round((1 - image.webpSize / image.originalSize) * 100)}%)
+                      <div className={`font-medium ${image.webpSize < image.originalSize ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
+                        {image.webpSize < image.originalSize
+                          ? `Saved: ${formatFileSize(image.originalSize - image.webpSize)} (${Math.round((1 - image.webpSize / image.originalSize) * 100)}%)`
+                          : `Increased: ${formatFileSize(image.webpSize - image.originalSize)} (+${Math.round((image.webpSize / image.originalSize - 1) * 100)}%)`}
                       </div>
                     </div>
                   </div>
@@ -257,7 +278,7 @@ export function ImageToWebp() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => removeImage(index)}
+                      onClick={() => removeImage(image.id)}
                     >
                       Remove
                     </Button>
