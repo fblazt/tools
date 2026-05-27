@@ -12,6 +12,7 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { SidebarTrigger } from "~/components/ui/sidebar";
 import { ToolsSearch } from "~/components/tools-search";
+import { ToolErrorBoundary } from "~/components/tool-error-boundary";
 import { toolsById } from "~/lib/tools-registry";
 
 export function meta({ params }: Route.MetaArgs) {
@@ -88,9 +89,11 @@ export default function ToolPage() {
         </div>
       </header>
       <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-        <Suspense fallback={<div className="flex items-center justify-center p-8 text-muted-foreground">Loading tool...</div>}>
-          <ToolComponent />
-        </Suspense>
+        <ToolErrorBoundary toolName={tool.title}>
+          <Suspense fallback={<div className="flex items-center justify-center p-8 text-muted-foreground">Loading tool...</div>}>
+            <ToolComponent />
+          </Suspense>
+        </ToolErrorBoundary>
       </div>
     </>
   );
