@@ -15,62 +15,7 @@ import {
   useSidebar,
 } from "~/components/ui/sidebar"
 import { ThemeToggle } from "~/components/theme-toggle"
-
-// Tools data
-const data = {
-  navMain: [
-    {
-      title: "Encoding Tools",
-      url: "#",
-      items: [
-        {
-          title: "QR Code Generator",
-          url: "/tools/qr-generator",
-        },
-      ],
-    },
-    {
-      title: "Security Tools",
-      url: "#",
-      items: [
-        {
-          title: "JWT Decoder",
-          url: "/tools/jwt-decoder",
-        },
-      ],
-    },
-    {
-      title: "Design Tools",
-      url: "#",
-      items: [
-        {
-          title: "Image to WebP Converter",
-          url: "/tools/image-to-webp",
-        },
-      ],
-    },
-    {
-      title: "Text Tools",
-      url: "#",
-      items: [
-        {
-          title: "Markdown Previewer",
-          url: "/tools/markdown-previewer",
-        },
-      ],
-    },
-    {
-      title: "Development Tools",
-      url: "#",
-      items: [
-        {
-          title: "JSON API Tester",
-          url: "/tools/json-api-tester",
-        },
-      ],
-    },
-  ],
-}
+import { toolsByCategory } from "~/lib/tools-registry"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation();
@@ -96,16 +41,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </div>
       </SidebarHeader>
       <SidebarContent>
-        {/* We create a SidebarGroup for each parent. */}
-        {data.navMain.map((item) => (
-          <SidebarGroup key={item.title}>
-            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+        {toolsByCategory.map((category) => (
+          <SidebarGroup key={category.title}>
+            <SidebarGroupLabel>{category.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {item.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={location.pathname === item.url}>
-                      <Link to={item.url} onClick={handleLinkClick}>{item.title}</Link>
+                {category.tools.map((tool) => (
+                  <SidebarMenuItem key={tool.id}>
+                    <SidebarMenuButton asChild isActive={location.pathname === `/tools/${tool.id}`}>
+                      <Link to={`/tools/${tool.id}`} onClick={handleLinkClick}>{tool.title}</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}

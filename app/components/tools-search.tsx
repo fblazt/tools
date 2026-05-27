@@ -10,45 +10,7 @@ import {
   CommandList,
 } from "~/components/ui/command";
 import { Search, Command as CommandIcon, Type } from "lucide-react";
-
-// Tools data - centralized for search
-const tools = [
-  {
-    id: "qr-generator",
-    title: "QR Code Generator",
-    description: "Generate QR codes from text or URLs",
-    category: "Encoding",
-    keywords: ["qr", "code", "generator", "barcode", "scan"],
-  },
-  {
-    id: "jwt-decoder",
-    title: "JWT Decoder",
-    description: "Decode and verify JSON Web Tokens",
-    category: "Security",
-    keywords: ["jwt", "token", "decoder", "json", "web", "token"],
-  },
-  {
-    id: "image-to-webp",
-    title: "Image to WebP Converter",
-    description: "Convert images to WebP format",
-    category: "Design",
-    keywords: ["image", "webp", "converter", "format", "picture", "photo"],
-  },
-  {
-    id: "markdown-previewer",
-    title: "Markdown Previewer",
-    description: "Preview Markdown text with live formatting",
-    category: "Text Tools",
-    keywords: ["markdown", "preview", "md", "text", "formatting"],
-  },
-  {
-    id: "json-api-tester",
-    title: "JSON API Tester",
-    description: "Test REST APIs with JSON payloads",
-    category: "Development Tools",
-    keywords: ["api", "test", "rest", "json", "http", "request"],
-  },
-];
+import { tools } from "~/lib/tools-registry";
 
 export function ToolsSearch() {
   const [open, setOpen] = useState(false);

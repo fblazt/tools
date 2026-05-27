@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { useParams, Link } from "react-router";
 import type { Route } from "./+types/tools.$toolId";
 import {
@@ -13,11 +14,7 @@ import { SidebarTrigger } from "~/components/ui/sidebar";
 import { AppSidebar } from "~/components/app-sidebar";
 import { ToolsSearch } from "~/components/tools-search";
 import { SidebarProvider, SidebarInset } from "~/components/ui/sidebar";
-import { QRGenerator } from "~/components/tools/qr-generator";
-import { JWTDecoder } from "~/components/tools/jwt-decoder";
-import { ImageToWebp } from "~/components/tools/image-to-webp";
-import { MarkdownPreviewer } from "~/components/tools/markdown-previewer";
-import { JsonApiTester } from "~/components/tools/json-api-tester";
+import { toolsById } from "~/lib/tools-registry";
 
 export function meta({ params }: Route.MetaArgs) {
   const toolName = params.toolId
@@ -31,38 +28,12 @@ export function meta({ params }: Route.MetaArgs) {
 }
 
 // Tool registry - map tool IDs to their components
-const toolComponents: Record<string, { component: React.ComponentType; title: string }> = {
-  "qr-generator": {
-    component: QRGenerator,
-    title: "QR Code Generator",
-  },
-  "jwt-decoder": {
-    component: JWTDecoder,
-    title: "JWT Decoder",
-  },
-  "image-to-webp": {
-    component: ImageToWebp,
-    title: "Image to WebP Converter",
-  },
-  "markdown-previewer": {
-    component: MarkdownPreviewer,
-    title: "Markdown Previewer",
-  },
-  "json-api-tester": {
-    component: JsonApiTester,
-    title: "JSON API Tester",
-  },
-  // Add more tools here as you create them
-  // "json-formatter": {
-  //   component: JsonFormatter,
-  //   title: "JSON Formatter",
-  // },
-};
+const getToolById = (id: string) => toolsById.get(id);
 
 export default function ToolPage() {
   const params = useParams();
   const toolId = params.toolId || "";
-  const tool = toolComponents[toolId];
+  const tool = getToolById(toolId);
 
   if (!tool) {
     return (
@@ -127,7 +98,9 @@ export default function ToolPage() {
             </div>
           </header>
         <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-          <ToolComponent />
+          <Suspense fallback={<div className="flex items-center justify-center p-8 text-muted-foreground">Loading tool...</div>}>
+            <ToolComponent />
+          </Suspense>
         </div>
       </SidebarInset>
     </SidebarProvider>
