@@ -112,7 +112,9 @@ export function QRGenerator() {
                 <div className="flex gap-2">
                   <Popover>
                     <PopoverTrigger asChild>
-                      <div
+                      <button
+                        type="button"
+                        aria-label={`Pick foreground color, current: ${fgColor}`}
                         className="w-16 h-10 rounded-md border-2 border-input cursor-pointer"
                         style={{ backgroundColor: fgColor }}
                       />
@@ -122,10 +124,12 @@ export function QRGenerator() {
                     </PopoverContent>
                   </Popover>
                   <Input
+                    id="fgColor"
                     type="text"
                     value={fgColor}
                     onChange={(e) => setFgColor(e.target.value)}
                     placeholder="#000000"
+                    aria-label="Foreground color hex value"
                     className="flex-1"
                   />
                 </div>
@@ -135,7 +139,9 @@ export function QRGenerator() {
                 <div className="flex gap-2">
                   <Popover>
                     <PopoverTrigger asChild>
-                      <div
+                      <button
+                        type="button"
+                        aria-label={`Pick background color, current: ${bgColor}`}
                         className="w-16 h-10 rounded-md border-2 border-input cursor-pointer"
                         style={{ backgroundColor: bgColor }}
                       />
@@ -145,10 +151,12 @@ export function QRGenerator() {
                     </PopoverContent>
                   </Popover>
                   <Input
+                    id="bgColor"
                     type="text"
                     value={bgColor}
                     onChange={(e) => setBgColor(e.target.value)}
                     placeholder="#ffffff"
+                    aria-label="Background color hex value"
                     className="flex-1"
                   />
                 </div>
