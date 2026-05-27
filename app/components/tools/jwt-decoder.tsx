@@ -122,6 +122,7 @@ export function JWTDecoder() {
             <Textarea
               id="jwt-input"
               className="min-h-[100px] font-mono text-sm resize-none"
+              style={{ fieldSizing: "fixed" }}
               placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
               value={jwtInput}
               onChange={(e) => setJwtInput(e.target.value)}
@@ -138,9 +139,9 @@ export function JWTDecoder() {
 
       {/* Results Section */}
       {decoded && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
           {/* Header */}
-          <Card>
+          <Card className="min-w-0">
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 Header
@@ -168,7 +169,7 @@ export function JWTDecoder() {
           </Card>
 
           {/* Payload */}
-          <Card>
+          <Card className="min-w-0">
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 Payload
