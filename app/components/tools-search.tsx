@@ -65,15 +65,20 @@ export function ToolsSearch() {
     <>
       <button
         className="flex items-center gap-2 px-3 py-2 text-sm bg-muted hover:bg-muted/80 rounded-md transition-colors"
-        aria-label="Search tools (⌘K)"
+        aria-label="Search tools (⌘K or /)"
         onClick={() => setOpen(true)}
       >
         <Search className="h-4 w-4" />
         <span className="text-muted-foreground">Search tools...</span>
-        <kbd className="ml-auto flex items-center gap-1 text-xs bg-background border rounded px-1.5 py-0.5">
-          <CommandIcon className="h-3 w-3" />
-          <span>K</span>
-        </kbd>
+        <span className="ml-auto flex items-center gap-1">
+          <kbd className="flex items-center gap-1 text-xs bg-background border rounded px-1.5 py-0.5">
+            <CommandIcon className="h-3 w-3" />
+            <span>K</span>
+          </kbd>
+          <kbd className="text-xs bg-background border rounded px-1.5 py-0.5">
+            /
+          </kbd>
+        </span>
       </button>
 
       <CommandDialog open={open} onOpenChange={setOpen} title="Search Tools" description="Search for a tool to use...">

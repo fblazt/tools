@@ -25,11 +25,12 @@ describe("ToolsSearch", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByLabelText("Search tools (⌘K)")).toBeInTheDocument();
+    expect(screen.getByLabelText("Search tools (⌘K or /)")).toBeInTheDocument();
     expect(screen.getByText("Search tools...")).toBeInTheDocument();
     
     // Check for the keyboard shortcut components separately
     expect(screen.getByText("K")).toBeInTheDocument();
+    expect(screen.getByText("/")).toBeInTheDocument();
     const searchButton = screen.getByRole("button", { name: /search tools/i });
     expect(searchButton.querySelector("svg.lucide-command")).toBeInTheDocument();
   });
@@ -42,7 +43,7 @@ describe("ToolsSearch", () => {
       </MemoryRouter>
     );
 
-    const searchButton = screen.getByLabelText("Search tools (⌘K)");
+    const searchButton = screen.getByLabelText("Search tools (⌘K or /)");
     await user.click(searchButton);
 
     expect(screen.getByPlaceholderText("Search tools...")).toBeInTheDocument();
@@ -56,7 +57,7 @@ describe("ToolsSearch", () => {
       </MemoryRouter>
     );
 
-    const searchButton = screen.getByLabelText("Search tools (⌘K)");
+    const searchButton = screen.getByLabelText("Search tools (⌘K or /)");
     await user.click(searchButton);
 
     expect(screen.getByText("QR Code Generator")).toBeInTheDocument();
@@ -74,7 +75,7 @@ describe("ToolsSearch", () => {
       </MemoryRouter>
     );
 
-    const searchButton = screen.getByLabelText("Search tools (⌘K)");
+    const searchButton = screen.getByLabelText("Search tools (⌘K or /)");
     await user.click(searchButton);
 
     const searchInput = screen.getByPlaceholderText("Search tools...");
@@ -92,7 +93,7 @@ describe("ToolsSearch", () => {
       </MemoryRouter>
     );
 
-    const searchButton = screen.getByLabelText("Search tools (⌘K)");
+    const searchButton = screen.getByLabelText("Search tools (⌘K or /)");
     await user.click(searchButton);
 
     const qrTool = screen.getByText("QR Code Generator");

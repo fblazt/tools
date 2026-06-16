@@ -214,6 +214,48 @@ export function JsonApiTester() {
     }
   };
 
+  const exportAsCurl = (): string => {
+    let curl = `curl -X ${method} '${url}'`;
+    headers.forEach(h => {
+      if (h.key && h.value) curl += ` \\\n  -H '${h.key}: ${h.value}'`;
+    });
+    if (["POST", "PUT", "PATCH"].includes(method) && requestBody.trim()) {
+      curl += ` \\\n  -H 'Content-Type: application/json'`;
+      curl += ` \\\n  -d '${requestBody.replace(/'/g, "'\\''")}'`;
+    }
+    return curl;
+  };
+
+  const importFromCurl = (curlStr: string) => {
+    try {
+      const cleaned = curlStr.replace(/\\\n/g, " ").trim();
+      // Extract method
+      const methodMatch = cleaned.match(/-X\s+(\w+)/);
+      if (methodMatch) setMethod(methodMatch[1].toUpperCase());
+      else if (cleaned.includes("-d ") || cleaned.includes("--data")) setMethod("POST");
+      else setMethod("GET");
+      // Extract URL
+      const urlMatch = cleaned.match(/curl\s+(?:-X\s+\w+\s+)?['"]?([^\s'"]+)['"]?/) ||
+                       cleaned.match(/['"]?(https?:\/\/[^\s'"]+)['"]?/);
+      if (urlMatch) setUrl(urlMatch[1]);
+      // Extract headers
+      const headerMatches = [...cleaned.matchAll(/-H\s+['"]([^'"]+)['"]/g)];
+      const newHeaders: Header[] = headerMatches
+        .map(m => {
+          const [key, ...rest] = m[1].split(":");
+          return { key: key.trim(), value: rest.join(":").trim() };
+        })
+        .filter(h => h.key.toLowerCase() !== "content-type");
+      setHeaders(newHeaders);
+      // Extract body
+      const bodyMatch = cleaned.match(/(?:-d|--data|--data-raw)\s+['"](.+?)['"]\s*$/s) ||
+                        cleaned.match(/(?:-d|--data|--data-raw)\s+'(.+?)'/s);
+      if (bodyMatch) setRequestBody(bodyMatch[1]);
+    } catch {
+      setError("Failed to parse cURL command");
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Header */}
@@ -327,6 +369,30 @@ export function JsonApiTester() {
             >
               {loading ? "Sending..." : "Send Request"}
             </Button>
+
+            {/* cURL Import/Export */}
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={() => navigator.clipboard.writeText(exportAsCurl())}
+                disabled={!url.trim()}
+              >
+                Copy as cURL
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={async () => {
+                  const text = await navigator.clipboard.readText();
+                  importFromCurl(text);
+                }}
+              >
+                Paste cURL
+              </Button>
+            </div>
 
             {/* Error Display */}
             {error && (

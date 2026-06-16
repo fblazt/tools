@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
@@ -64,6 +65,19 @@ export function MarkdownPreviewer() {
     URL.revokeObjectURL(url);
   };
 
+  const exportToHtml = () => {
+    const htmlContent = document.getElementById("markdown-preview")?.innerHTML;
+    if (!htmlContent) return;
+    const fullHtml = `<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Markdown Export</title>\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">\n<style>body{font-family:system-ui,sans-serif;max-width:800px;margin:0 auto;padding:2rem;line-height:1.6}pre{padding:1rem;border-radius:6px;overflow-x:auto}code{font-size:0.9em}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left}</style>\n</head>\n<body>\n${htmlContent}\n</body>\n</html>`;
+    const blob = new Blob([fullHtml], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "markdown.html";
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
 
 
   return (
@@ -92,6 +106,9 @@ export function MarkdownPreviewer() {
             </Button>
             <Button onClick={downloadMarkdown} variant="outline" size="sm">
               Download MD
+            </Button>
+            <Button onClick={exportToHtml} variant="outline" size="sm">
+              Export HTML
             </Button>
 
           </div>
@@ -162,7 +179,7 @@ export function MarkdownPreviewer() {
               className="h-[600px] p-4 border rounded-md overflow-auto bg-muted/30 prose prose-sm max-w-none dark:prose-invert [&_p:not(:last-child)]:mb-4 [&_h1:not(:last-child)]:mb-4 [&_h2:not(:last-child)]:mb-3 [&_h3:not(:last-child)]:mb-2 [&_ul:not(:last-child)]:mb-4 [&_ol:not(:last-child)]:mb-4 [&_blockquote:not(:last-child)]:mb-4 [&_pre:not(:last-child)]:mb-4 [&_table:not(:last-child)]:mb-4"
             >
               {markdown ? (
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
                   {markdown}
                 </ReactMarkdown>
               ) : (
