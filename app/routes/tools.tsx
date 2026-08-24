@@ -2,8 +2,7 @@ import { Link } from "react-router";
 import type { Route } from "./+types/tools";
 import { ExternalLink } from "lucide-react";
 import { ToolsSearch } from "~/components/tools-search";
-import { SidebarTrigger } from "~/components/ui/sidebar";
-import { Separator } from "~/components/ui/separator";
+import { ThemeToggle } from "~/components/theme-toggle";
 import { toolsByCategory } from "~/lib/tools-registry";
 
 export function meta({}: Route.MetaArgs) {
@@ -19,15 +18,14 @@ export function meta({}: Route.MetaArgs) {
 export default function ToolsIndex() {
   return (
     <>
-      <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-        <SidebarTrigger className="-ml-1" />
-        <Separator orientation="vertical" className="mr-2 h-4" />
-        <div className="flex items-center justify-between flex-1">
-          <h1 className="text-lg font-semibold">Developer Tools</h1>
+      <header className="flex h-16 shrink-0 items-center justify-between border-b px-4 md:px-8">
+        <h1 className="text-lg font-semibold">Developer Tools</h1>
+        <div className="flex items-center gap-3">
           <ToolsSearch />
+          <ThemeToggle />
         </div>
       </header>
-      <div className="flex flex-1 flex-col gap-8 p-4 md:p-8">
+      <div className="flex flex-1 flex-col gap-8 p-4 pb-24 md:p-8 md:pb-8 md:pl-24">
         <div>
           <p className="text-muted-foreground">
             Privacy-first utilities that run entirely in your browser — zero tracking, zero server uploads.

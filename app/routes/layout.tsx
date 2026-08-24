@@ -5,7 +5,7 @@ import { SidebarProvider, SidebarInset } from "~/components/ui/sidebar";
 export default function Layout() {
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar variant="floating" />
       <SidebarInset className="min-w-0">
         <Outlet />
       </SidebarInset>

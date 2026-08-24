@@ -1,9 +1,8 @@
 import { render, screen } from "@testing-library/react";
-import { userEvent } from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { SidebarProvider } from "~/components/ui/sidebar";
 import { AppSidebar } from "./app-sidebar";
-import { toolsByCategory } from "~/lib/tools-registry";
+import { tools, toolsByCategory } from "~/lib/tools-registry";
 
 beforeAll(() => {
   Object.defineProperty(window, "matchMedia", {
@@ -39,29 +38,89 @@ describe("AppSidebar", () => {
     }
   });
 
-  it("renders all tool links", () => {
+  it("renders all tool links in desktop sidebar and mobile navigation", () => {
     renderSidebar();
     for (const category of toolsByCategory) {
       for (const tool of category.tools) {
-        expect(screen.getByRole("link", { name: tool.title })).toBeInTheDocument();
+        const links = screen.getAllByRole("link", { name: tool.title });
+        expect(links.length).toBe(2);
       }
     }
   });
 
   it("marks the active tool based on current path", () => {
     renderSidebar("/tools/jwt-decoder");
-    const activeLink = screen.getByRole("link", { name: "JWT Decoder" });
-    expect(activeLink.closest("[data-active=true]")).toBeInTheDocument();
+    const links = screen.getAllByRole("link", { name: "JWT Decoder" });
+    // Desktop link is wrapped in an element with data-active="true"
+    const desktopLink = links.find((link) => link.closest("[data-active=true]"));
+    expect(desktopLink).toBeDefined();
+
+    // Mobile link has active highlight styling
+    const mobileLink = links.find((link) =>
+      link.className.includes("bg-sidebar-accent text-sidebar-accent-foreground")
+    );
+    expect(mobileLink).toBeDefined();
+  });
+
+  it("renders header branding and version badge", () => {
+    renderSidebar();
+    expect(screen.getByText("Tools")).toBeInTheDocument();
+    expect(screen.getByText("v1.0")).toBeInTheDocument();
   });
 
   it("links point to correct tool URLs", () => {
     renderSidebar();
-    const link = screen.getByRole("link", { name: "QR Code Generator" });
-    expect(link).toHaveAttribute("href", "/tools/qr-generator");
+    const qrLinks = screen.getAllByRole("link", { name: "QR Code Generator" });
+    for (const link of qrLinks) {
+      expect(link).toHaveAttribute("href", "/tools/qr-generator");
+    }
 
-    const externalLink = screen.getByRole("link", { name: "Markdown Editor" });
-    expect(externalLink).toHaveAttribute("href", "https://md.fblazt.xyz");
-    expect(externalLink).toHaveAttribute("target", "_blank");
-    expect(externalLink).toHaveAttribute("rel", "noopener noreferrer");
+    const externalLinks = screen.getAllByRole("link", { name: "Markdown Editor" });
+    for (const link of externalLinks) {
+      expect(link).toHaveAttribute("href", "https://md.fblazt.xyz");
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    }
+  });
+
+  describe("Mobile Bottom Navigation Bar", () => {
+    it("renders mobile navigation bar container with aria-label", () => {
+      renderSidebar();
+      const mobileNav = screen.getByRole("navigation", { name: "Mobile Navigation" });
+      expect(mobileNav).toBeInTheDocument();
+      expect(mobileNav).toHaveClass("fixed", "bottom-4", "md:hidden");
+    });
+
+    it("renders Home button linking to root with active state on /", () => {
+      renderSidebar("/");
+      const homeLink = screen.getByRole("link", { name: "Home" });
+      expect(homeLink).toBeInTheDocument();
+      expect(homeLink).toHaveAttribute("href", "/");
+      expect(homeLink).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground");
+    });
+
+    it("renders Home button with inactive state on tool page", () => {
+      renderSidebar("/tools/jwt-decoder");
+      const homeLink = screen.getByRole("link", { name: "Home" });
+      expect(homeLink).toBeInTheDocument();
+      expect(homeLink).toHaveAttribute("href", "/");
+      expect(homeLink).toHaveClass("text-muted-foreground");
+    });
+
+    it("renders all tools in mobile navigation bar sorted left to right", () => {
+      renderSidebar();
+      const mobileNav = screen.getByRole("navigation", { name: "Mobile Navigation" });
+      const toolLinks = mobileNav.querySelectorAll("a");
+      // 1 home link + number of tools
+      expect(toolLinks.length).toBe(tools.length + 1);
+
+      expect(toolLinks[0]).toHaveAttribute("href", "/");
+      tools.forEach((tool, index) => {
+        const expectedHref = tool.externalUrl || `/tools/${tool.id}`;
+        expect(toolLinks[index + 1]).toHaveAttribute("href", expectedHref);
+        expect(toolLinks[index + 1]).toHaveAttribute("title", tool.title);
+      });
+    });
   });
 });
+

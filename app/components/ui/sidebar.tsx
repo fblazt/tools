@@ -218,25 +218,39 @@ function Sidebar({
       <div
         data-slot="sidebar-gap"
         className={cn(
-          "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
+          "relative bg-transparent transition-[width] duration-200 ease-linear",
+          variant === "floating"
+            ? "w-0 hidden md:block md:w-0"
+            : "w-(--sidebar-width)",
           "group-data-[collapsible=offcanvas]:w-0",
           "group-data-[side=right]:rotate-180",
-          variant === "floating" || variant === "inset"
-            ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
-            : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
+          variant === "floating"
+            ? "w-0"
+            : variant === "inset"
+              ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
+              : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
         )}
       />
       <div
         data-slot="sidebar-container"
         className={cn(
-          "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
-          side === "left"
-            ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
-            : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
-          // Adjust the padding for floating and inset variants.
-          variant === "floating" || variant === "inset"
-            ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
-            : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
+          "fixed hidden transition-[left,right,width,transform] duration-200 ease-linear md:flex",
+          variant === "floating"
+            ? cn(
+                "left-3 md:left-4 top-1/2 -translate-y-1/2 z-40 h-auto max-h-[min(88svh,680px)] p-0",
+                side === "left"
+                  ? "left-3 md:left-4 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1-2rem)]"
+                  : "right-3 md:right-4 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1-2rem)]"
+              )
+            : cn(
+                "inset-y-0 z-10 h-svh w-(--sidebar-width)",
+                side === "left"
+                  ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
+                  : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
+                variant === "inset"
+                  ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
+                  : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l"
+              ),
           className
         )}
         {...props}
@@ -244,7 +258,10 @@ function Sidebar({
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          className="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
+          className={cn(
+            "bg-sidebar flex h-full w-full flex-col",
+            "group-data-[variant=floating]:rounded-3xl group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border/80 group-data-[variant=floating]:bg-sidebar/85 group-data-[variant=floating]:dark:bg-sidebar/80 group-data-[variant=floating]:backdrop-blur-2xl group-data-[variant=floating]:shadow-2xl group-data-[variant=floating]:shadow-black/10 group-data-[variant=floating]:dark:shadow-black/50 group-data-[variant=floating]:ring-1 group-data-[variant=floating]:ring-black/5 group-data-[variant=floating]:dark:ring-white/10 group-data-[variant=floating]:overflow-hidden"
+          )}
         >
           {children}
         </div>
@@ -374,7 +391,7 @@ function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="sidebar-content"
       data-sidebar="content"
       className={cn(
-        "flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+        "flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden group-data-[collapsible=icon]:overflow-hidden",
         className
       )}
       {...props}
