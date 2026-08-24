@@ -37,7 +37,7 @@ export function QRGenerator() {
     };
 
     img.onerror = () => {
-      alert("Failed to generate PNG. Try a simpler input.");
+      alert("Unable to render QR code into PNG format. Please check your input and try again.");
     };
 
     const encoded = btoa(
@@ -68,7 +68,7 @@ export function QRGenerator() {
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">QR Code Generator</h1>
         <p className="text-muted-foreground">
-          Generate QR codes instantly in your browser. All processing happens client-side - no data is sent to any server.
+          Generate custom high-resolution QR codes with live color styling and instant vector SVG or PNG download.
         </p>
       </div>
 
@@ -237,8 +237,7 @@ export function QRGenerator() {
             </ul>
           </div>
           <p className="text-xs italic">
-            All QR code generation is performed locally in your browser using the qrcode.react library.
-            No data is transmitted to external servers.
+            All QR code generation is performed locally in your browser. No data is transmitted to external servers.
           </p>
         </CardContent>
       </Card>

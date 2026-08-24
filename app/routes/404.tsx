@@ -8,8 +8,8 @@ import { Separator } from "~/components/ui/separator";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Page Not Found - Tools" },
-    { name: "description", content: "The page you're looking for doesn't exist" },
+    { title: "404 Not Found — Tools" },
+    { name: "description", content: "The requested page or tool could not be found" },
   ];
 }
 

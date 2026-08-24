@@ -7,10 +7,10 @@ import { toolsByCategory } from "~/lib/tools-registry";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Tools - Client-Side Tools Collection" },
-    { name: "description", content: "A collection of client-side developer tools" },
-    { property: "og:title", content: "Tools - Client-Side Tools Collection" },
-    { property: "og:description", content: "A collection of privacy-focused developer tools that run entirely in your browser" },
+    { title: "Tools — Fast & Private Developer Utilities" },
+    { name: "description", content: "A suite of fast, in-browser developer utilities. All processing happens locally with zero server requests." },
+    { property: "og:title", content: "Tools — Fast & Private Developer Utilities" },
+    { property: "og:description", content: "A collection of privacy-focused developer tools that run entirely in your browser with zero tracking." },
     { property: "og:type", content: "website" },
   ];
 }
@@ -22,14 +22,14 @@ export default function ToolsIndex() {
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
         <div className="flex items-center justify-between flex-1">
-          <h1 className="text-lg font-semibold">Tools</h1>
+          <h1 className="text-lg font-semibold">Developer Tools</h1>
           <ToolsSearch />
         </div>
       </header>
       <div className="flex flex-1 flex-col gap-8 p-4 md:p-8">
         <div>
           <p className="text-muted-foreground">
-            All processing happens locally in your browser — no data is sent to external servers.
+            Privacy-first utilities that run entirely in your browser — zero tracking, zero server uploads.
           </p>
         </div>
         {toolsByCategory.map((category) => (

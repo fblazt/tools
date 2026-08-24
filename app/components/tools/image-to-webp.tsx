@@ -164,7 +164,7 @@ export function ImageToWebp() {
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Image to WebP Converter</h1>
         <p className="text-muted-foreground">
-          Convert your images to WebP format for better compression and quality
+          Convert images to modern WebP format for smaller file sizes with zero server uploads.
         </p>
       </div>
 

@@ -81,7 +81,7 @@ export function ToolsSearch() {
         </span>
       </button>
 
-      <CommandDialog open={open} onOpenChange={setOpen} title="Search Tools" description="Search for a tool to use...">
+      <CommandDialog open={open} onOpenChange={setOpen} title="Search Tools" description="Type a command or search for a tool...">
         <CommandInput
           placeholder="Search tools..."
           value={search}

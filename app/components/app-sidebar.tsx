@@ -34,7 +34,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold">Tools</h2>
-              <p className="text-sm text-muted-foreground">Client-Side Tools</p>
+              <p className="text-sm text-muted-foreground">Fast, private in-browser utilities</p>
             </div>
             <ThemeToggle />
           </div>

@@ -21,10 +21,10 @@ export function meta({ params }: Route.MetaArgs) {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
   return [
-    { title: `${toolName} - Tools` },
-    { name: "description", content: `Use our ${toolName} tool for client-side processing` },
-    { property: "og:title", content: `${toolName} - Tools` },
-    { property: "og:description", content: `Use our ${toolName} tool — runs entirely in your browser, no data sent to servers` },
+    { title: `${toolName} — Tools` },
+    { name: "description", content: `${toolName} — fast, private, and runs entirely in your browser with no server uploads.` },
+    { property: "og:title", content: `${toolName} — Tools` },
+    { property: "og:description", content: `${toolName} — fast, private, and runs entirely in your browser with no server uploads.` },
     { property: "og:type", content: "website" },
   ];
 }

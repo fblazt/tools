@@ -86,7 +86,7 @@ export function MarkdownPreviewer() {
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Markdown Previewer</h1>
         <p className="text-muted-foreground">
-          Preview your markdown in real-time. All processing happens client-side - no data is sent to any server.
+          Write and preview GitHub Flavored Markdown with live syntax highlighting and instant export.
         </p>
       </div>
 
@@ -240,8 +240,7 @@ export function MarkdownPreviewer() {
             </div>
           </div>
           <p className="text-xs italic">
-            All markdown processing is performed locally in your browser using react-markdown and remark-gfm.
-            No data is transmitted to external servers.
+            All markdown processing is performed locally in your browser. No data is transmitted to external servers.
           </p>
         </CardContent>
       </Card>

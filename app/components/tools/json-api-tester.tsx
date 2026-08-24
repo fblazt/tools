@@ -262,7 +262,7 @@ export function JsonApiTester() {
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">JSON API Tester</h1>
         <p className="text-muted-foreground">
-          Test REST APIs with JSON payloads. All requests are made directly from your browser using the native fetch API.
+          Send HTTP requests and debug REST APIs directly from your browser with cURL support and response inspection.
         </p>
       </div>
 
@@ -541,8 +541,7 @@ export function JsonApiTester() {
             </ul>
           </div>
           <p className="text-xs italic flex items-center gap-2">
-            Be cautious when testing APIs with authentication tokens or sensitive data.
-            Request history is stored locally in your browser.
+            Requests run directly from your browser and are subject to the target server's CORS policy. Request history is stored locally in your browser.
           </p>
         </CardContent>
       </Card>

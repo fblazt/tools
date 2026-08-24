@@ -106,7 +106,7 @@ export function JWTDecoder() {
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">JWT Decoder</h1>
         <p className="text-muted-foreground">
-          Decode JSON Web Tokens (JWT) instantly in your browser. All processing happens client-side - no data is sent to any server.
+          Decode and inspect JSON Web Tokens instantly. Claims and expiration are evaluated locally in your browser.
         </p>
       </div>
 
@@ -264,7 +264,7 @@ export function JWTDecoder() {
             </ul>
           </div>
           <p className="text-xs italic flex items-center gap-2">
-            Never decode untrusted JWT tokens and use the data without proper verification.
+            Decoding a token does not verify its cryptographic signature. Never trust unverified payload data in production authorization logic.
           </p>
         </CardContent>
       </Card>

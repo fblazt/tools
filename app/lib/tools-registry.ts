@@ -21,8 +21,8 @@ export const tools: ToolDefinition[] = [
   {
     id: "qr-generator",
     title: "QR Code Generator",
-    description: "Generate QR codes from text or URLs",
-    category: "Encoding Tools",
+    description: "Create customizable QR codes for text, URLs, and contact info",
+    category: "Generators & Encoding",
     keywords: ["qr", "code", "generator", "barcode", "scan"],
     icon: QrCode,
     component: lazy(() =>
@@ -32,8 +32,8 @@ export const tools: ToolDefinition[] = [
   {
     id: "jwt-decoder",
     title: "JWT Decoder",
-    description: "Decode and verify JSON Web Tokens",
-    category: "Security Tools",
+    description: "Decode and inspect JSON Web Tokens and claims",
+    category: "Security & Auth",
     keywords: ["jwt", "token", "decoder", "json", "web", "token"],
     icon: Shield,
     component: lazy(() =>
@@ -43,8 +43,8 @@ export const tools: ToolDefinition[] = [
   {
     id: "image-to-webp",
     title: "Image to WebP Converter",
-    description: "Convert images to WebP format",
-    category: "Design Tools",
+    description: "Convert and optimize images to WebP format locally",
+    category: "Media & Images",
     keywords: ["image", "webp", "converter", "format", "picture", "photo"],
     icon: Image,
     component: lazy(() =>
@@ -54,8 +54,8 @@ export const tools: ToolDefinition[] = [
   {
     id: "markdown-previewer",
     title: "Markdown Previewer",
-    description: "Preview Markdown text with live formatting",
-    category: "Text Tools",
+    description: "Live Markdown editor with GitHub Flavored Markdown and HTML export",
+    category: "Text & Formatting",
     keywords: ["markdown", "preview", "md", "text", "formatting"],
     icon: FileText,
     component: lazy(() =>
@@ -67,8 +67,8 @@ export const tools: ToolDefinition[] = [
   {
     id: "json-api-tester",
     title: "JSON API Tester",
-    description: "Test REST APIs with JSON payloads",
-    category: "Development Tools",
+    description: "Compose HTTP requests and inspect REST API responses",
+    category: "Network & APIs",
     keywords: ["api", "test", "rest", "json", "http", "request"],
     icon: Globe,
     component: lazy(() =>

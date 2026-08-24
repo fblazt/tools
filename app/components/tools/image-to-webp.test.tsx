@@ -36,7 +36,7 @@ describe('ImageToWebp', () => {
     render(<ImageToWebp />);
 
     expect(screen.getByText('Image to WebP Converter')).toBeInTheDocument();
-    expect(screen.getByText(/Convert your images to WebP format/)).toBeInTheDocument();
+    expect(screen.getByText(/Convert images to modern WebP format/)).toBeInTheDocument();
   });
 
   it('has quality slider with default value', () => {
