@@ -1,5 +1,6 @@
 import * as React from "react"
 import { useLocation, Link } from "react-router"
+import { ExternalLink } from "lucide-react"
 
 import {
   Sidebar,
@@ -48,9 +49,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenu>
                 {category.tools.map((tool) => (
                   <SidebarMenuItem key={tool.id}>
-                    <SidebarMenuButton asChild isActive={location.pathname === `/tools/${tool.id}`}>
-                      <Link to={`/tools/${tool.id}`} onClick={handleLinkClick}>{tool.title}</Link>
-                    </SidebarMenuButton>
+                    {tool.externalUrl ? (
+                      <SidebarMenuButton asChild>
+                        <a
+                          href={tool.externalUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={handleLinkClick}
+                        >
+                          <span>{tool.title}</span>
+                          <ExternalLink className="h-3.5 w-3.5 text-muted-foreground shrink-0 ml-auto" />
+                        </a>
+                      </SidebarMenuButton>
+                    ) : (
+                      <SidebarMenuButton asChild isActive={location.pathname === `/tools/${tool.id}`}>
+                        <Link to={`/tools/${tool.id}`} onClick={handleLinkClick}>{tool.title}</Link>
+                      </SidebarMenuButton>
+                    )}
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>

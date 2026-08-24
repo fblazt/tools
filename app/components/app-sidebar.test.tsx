@@ -58,5 +58,10 @@ describe("AppSidebar", () => {
     renderSidebar();
     const link = screen.getByRole("link", { name: "QR Code Generator" });
     expect(link).toHaveAttribute("href", "/tools/qr-generator");
+
+    const externalLink = screen.getByRole("link", { name: "Markdown Editor" });
+    expect(externalLink).toHaveAttribute("href", "https://md.fblazt.xyz");
+    expect(externalLink).toHaveAttribute("target", "_blank");
+    expect(externalLink).toHaveAttribute("rel", "noopener noreferrer");
   });
 });

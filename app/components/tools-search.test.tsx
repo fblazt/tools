@@ -63,7 +63,7 @@ describe("ToolsSearch", () => {
     expect(screen.getByText("QR Code Generator")).toBeInTheDocument();
     expect(screen.getByText("JWT Decoder")).toBeInTheDocument();
     expect(screen.getByText("Image to WebP Converter")).toBeInTheDocument();
-    expect(screen.getByText("Markdown Previewer")).toBeInTheDocument();
+    expect(screen.getByText("Markdown Editor")).toBeInTheDocument();
     expect(screen.getByText("JSON API Tester")).toBeInTheDocument();
   });
 
@@ -85,7 +85,7 @@ describe("ToolsSearch", () => {
     expect(screen.queryByText("JWT Decoder")).not.toBeInTheDocument();
   });
 
-  it("navigates to tool when selected", async () => {
+  it("navigates to internal tool when selected", async () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter>
@@ -100,5 +100,25 @@ describe("ToolsSearch", () => {
     await user.click(qrTool);
 
     expect(mockNavigate).toHaveBeenCalledWith("/tools/qr-generator");
+  });
+
+  it("opens external URL when external tool is selected", async () => {
+    const windowOpenSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <ToolsSearch />
+      </MemoryRouter>
+    );
+
+    const searchButton = screen.getByLabelText("Search tools (⌘K or /)");
+    await user.click(searchButton);
+
+    const mdTool = screen.getByText("Markdown Editor");
+    await user.click(mdTool);
+
+    expect(windowOpenSpy).toHaveBeenCalledWith("https://md.fblazt.xyz", "_blank", "noopener,noreferrer");
+    expect(mockNavigate).not.toHaveBeenCalled();
+    windowOpenSpy.mockRestore();
   });
 });

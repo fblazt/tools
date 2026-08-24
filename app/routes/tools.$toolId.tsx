@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { useParams, Link } from "react-router";
 import type { Route } from "./+types/tools.$toolId";
+import { ExternalLink } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,6 +10,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
+import { Button } from "~/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
 import { SidebarTrigger } from "~/components/ui/sidebar";
 import { ToolsSearch } from "~/components/tools-search";
@@ -67,6 +70,7 @@ export default function ToolPage() {
     );
   }
 
+  const Icon = tool.icon;
   const ToolComponent = tool.component;
 
   return (
@@ -92,11 +96,42 @@ export default function ToolPage() {
         </div>
       </header>
       <div className="flex flex-1 flex-col gap-4 p-4 md:p-8">
-        <ToolErrorBoundary toolName={tool.title}>
-          <Suspense fallback={<div className="flex items-center justify-center p-8 text-muted-foreground">Loading tool...</div>}>
-            <ToolComponent />
-          </Suspense>
-        </ToolErrorBoundary>
+        {tool.externalUrl ? (
+          <div className="mx-auto max-w-lg w-full mt-8">
+            <Card>
+              <CardHeader className="text-center">
+                <div className="mx-auto rounded-full bg-muted p-4 mb-2 w-fit">
+                  <Icon className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <CardTitle>
+                  <h1 className="text-2xl font-semibold">{tool.title}</h1>
+                </CardTitle>
+                <CardDescription>{tool.description}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4 text-center">
+                <p className="text-sm text-muted-foreground">
+                  This tool is hosted externally. Click below to open it in a new tab.
+                </p>
+                <Button asChild className="w-full">
+                  <a href={tool.externalUrl} target="_blank" rel="noopener noreferrer">
+                    Open {tool.title} <ExternalLink className="ml-2 h-4 w-4" />
+                  </a>
+                </Button>
+                <div>
+                  <Link to="/" className="text-sm text-primary hover:underline">
+                    Back to all tools
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        ) : ToolComponent ? (
+          <ToolErrorBoundary toolName={tool.title}>
+            <Suspense fallback={<div className="flex items-center justify-center p-8 text-muted-foreground">Loading tool...</div>}>
+              <ToolComponent />
+            </Suspense>
+          </ToolErrorBoundary>
+        ) : null}
       </div>
     </>
   );

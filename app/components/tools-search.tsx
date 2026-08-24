@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
-  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -9,8 +8,8 @@ import {
   CommandItem,
   CommandList,
 } from "~/components/ui/command";
-import { Search, Command as CommandIcon } from "lucide-react";
-import { tools } from "~/lib/tools-registry";
+import { Search, Command as CommandIcon, ExternalLink } from "lucide-react";
+import { tools, type ToolDefinition } from "~/lib/tools-registry";
 
 export function ToolsSearch() {
   const [open, setOpen] = useState(false);
@@ -38,8 +37,12 @@ export function ToolsSearch() {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
-  const handleToolSelect = (toolId: string) => {
-    navigate(`/tools/${toolId}`);
+  const handleToolSelect = (tool: ToolDefinition) => {
+    if (tool.externalUrl) {
+      window.open(tool.externalUrl, "_blank", "noopener,noreferrer");
+    } else {
+      navigate(`/tools/${tool.id}`);
+    }
     setOpen(false);
   };
 
@@ -94,10 +97,15 @@ export function ToolsSearch() {
               {categoryTools.map((tool) => (
                 <CommandItem
                   key={tool.id}
-                  onSelect={() => handleToolSelect(tool.id)}
+                  onSelect={() => handleToolSelect(tool)}
                   className="flex flex-col items-start p-3"
                 >
-                  <div className="font-medium">{tool.title}</div>
+                  <div className="font-medium flex items-center gap-1.5 w-full">
+                    <span>{tool.title}</span>
+                    {tool.externalUrl && (
+                      <ExternalLink className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
+                    )}
+                  </div>
                   <div className="text-sm text-muted-foreground">
                     {tool.description}
                   </div>

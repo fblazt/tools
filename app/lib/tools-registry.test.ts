@@ -14,7 +14,15 @@ describe("tools-registry", () => {
         expect(tool.category).toBeTruthy();
         expect(tool.keywords.length).toBeGreaterThan(0);
         expect(tool.icon).toBeDefined();
-        expect(tool.component).toBeDefined();
+        expect(tool.component || tool.externalUrl).toBeDefined();
+      }
+    });
+
+    it("external tools have externalUrl defined", () => {
+      const externalTools = tools.filter((t) => t.externalUrl);
+      expect(externalTools.length).toBeGreaterThan(0);
+      for (const tool of externalTools) {
+        expect(tool.externalUrl).toMatch(/^https?:\/\//);
       }
     });
 

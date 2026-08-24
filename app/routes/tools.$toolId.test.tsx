@@ -39,6 +39,16 @@ describe("tools.$toolId route", () => {
     });
   });
 
+  it("renders redirect CTA for external tool", () => {
+    renderToolRoute("markdown-previewer");
+    expect(screen.getByRole("heading", { name: "Markdown Editor" })).toBeInTheDocument();
+    const ctaButton = screen.getByRole("link", { name: /open markdown editor/i });
+    expect(ctaButton).toHaveAttribute("href", "https://md.fblazt.xyz");
+    expect(ctaButton).toHaveAttribute("target", "_blank");
+    expect(ctaButton).toHaveAttribute("rel", "noopener noreferrer");
+    expect(screen.getByRole("link", { name: /back to all tools/i })).toHaveAttribute("href", "/");
+  });
+
   it("shows not-found state for invalid tool ID", () => {
     renderToolRoute("nonexistent-tool");
     expect(screen.getByRole("heading", { name: "Tool Not Found" })).toBeInTheDocument();

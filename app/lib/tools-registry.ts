@@ -9,7 +9,8 @@ export interface ToolDefinition {
   category: string;
   keywords: string[];
   icon: LucideIcon;
-  component: React.LazyExoticComponent<ComponentType>;
+  component?: React.LazyExoticComponent<ComponentType>;
+  externalUrl?: string;
 }
 
 export interface ToolCategory {
@@ -53,16 +54,12 @@ export const tools: ToolDefinition[] = [
   },
   {
     id: "markdown-previewer",
-    title: "Markdown Previewer",
-    description: "Live Markdown editor with GitHub Flavored Markdown and HTML export",
+    title: "Markdown Editor",
+    description: "Live Markdown editor and previewer with rich formatting",
     category: "Text & Formatting",
-    keywords: ["markdown", "preview", "md", "text", "formatting"],
+    keywords: ["markdown", "preview", "md", "text", "formatting", "editor"],
     icon: FileText,
-    component: lazy(() =>
-      import("~/components/tools/markdown-previewer").then((m) => ({
-        default: m.MarkdownPreviewer,
-      }))
-    ),
+    externalUrl: "https://md.fblazt.xyz",
   },
   {
     id: "json-api-tester",
