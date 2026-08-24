@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "~/components/ui/button";
 
 interface Props {
@@ -10,13 +10,28 @@ interface Props {
 interface State {
   hasError: boolean;
   error: Error | null;
+  isChunkError: boolean;
 }
 
 export class ToolErrorBoundary extends Component<Props, State> {
-  state: State = { hasError: false, error: null };
+  state: State = { hasError: false, error: null, isChunkError: false };
+
+  static isDynamicImportError(error: Error): boolean {
+    const msg = (error?.message || "").toLowerCase();
+    return (
+      msg.includes("failed to fetch dynamically imported module") ||
+      msg.includes("loading chunk") ||
+      msg.includes("failed to fetch") ||
+      msg.includes("dynamically imported module")
+    );
+  }
 
   static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error };
+    return {
+      hasError: true,
+      error,
+      isChunkError: ToolErrorBoundary.isDynamicImportError(error),
+    };
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
@@ -24,7 +39,11 @@ export class ToolErrorBoundary extends Component<Props, State> {
   }
 
   handleReset = () => {
-    this.setState({ hasError: false, error: null });
+    if (this.state.isChunkError && typeof window !== "undefined") {
+      window.location.reload();
+      return;
+    }
+    this.setState({ hasError: false, error: null, isChunkError: false });
   };
 
   render() {
@@ -41,7 +60,10 @@ export class ToolErrorBoundary extends Component<Props, State> {
               {this.state.error.message}
             </pre>
           )}
-          <Button onClick={this.handleReset}>Try again</Button>
+          <Button onClick={this.handleReset} className="gap-2">
+            <RefreshCw className="h-4 w-4" />
+            {this.state.isChunkError ? "Reload page" : "Try again"}
+          </Button>
         </div>
       );
     }
