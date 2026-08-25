@@ -41,10 +41,22 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
         )}
         {...props}
       >
-        <SidebarHeader className="p-2.5 pb-2">
-          <div className="flex items-center gap-3">
-            <div className="size-9 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0 font-bold shadow-xs">
-              <span className="text-base font-bold">T</span>
+        <SidebarHeader className="p-2 pb-2">
+          <Link
+            to="/"
+            onClick={handleLinkClick}
+            className="flex items-center gap-2.5 group/brand focus-visible:outline-hidden"
+            aria-label="Tools Home"
+          >
+            <div
+              className={cn(
+                "size-9.5 rounded-full flex items-center justify-center shrink-0 transition-all active:scale-95",
+                isHomeActive
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-xs"
+                  : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50"
+              )}
+            >
+              <Wrench className="size-4.5 shrink-0" />
             </div>
             <div className="flex flex-col min-w-0 transition-all duration-200 whitespace-nowrap overflow-hidden opacity-100 md:opacity-0 md:group-hover/dock:opacity-100">
               <div className="flex items-center gap-2">
@@ -55,9 +67,9 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
               </div>
               <p className="text-xs text-muted-foreground truncate">Fast, private utilities</p>
             </div>
-          </div>
+          </Link>
         </SidebarHeader>
-        <SidebarSeparator className="mx-2 my-1 opacity-60" />
+        <SidebarSeparator className="mx-3 my-1.5 opacity-60" />
         <SidebarContent className="px-2 py-1">
           {toolsByCategory.map((category) => (
             <SidebarGroup key={category.title} className="p-0 py-1">
@@ -75,7 +87,7 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
                         <SidebarMenuItem key={tool.id}>
                           <SidebarMenuButton
                             asChild
-                            className="h-10 rounded-xl px-1.5 transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground"
+                            className="h-9.5 rounded-full px-0 transition-all active:scale-95 text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50"
                           >
                             <a
                               href={tool.externalUrl}
@@ -84,13 +96,13 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
                               onClick={handleLinkClick}
                               className="flex items-center gap-2.5 w-full"
                             >
-                              <div className="size-7 flex items-center justify-center shrink-0 rounded-lg text-muted-foreground">
-                                <Icon className="size-4 shrink-0 transition-transform duration-200 group-hover/menu-item:scale-110" />
+                              <div className="size-9.5 flex items-center justify-center shrink-0 rounded-full">
+                                <Icon className="size-4.5 shrink-0 transition-transform duration-200 group-hover/menu-item:scale-110" />
                               </div>
-                              <span className="text-sm truncate whitespace-nowrap transition-all duration-200 opacity-100 md:opacity-0 md:group-hover/dock:opacity-100 md:group-hover/dock:flex-1">
+                              <span className="text-sm font-medium truncate whitespace-nowrap transition-all duration-200 opacity-100 md:opacity-0 md:group-hover/dock:opacity-100 md:group-hover/dock:flex-1">
                                 {tool.title}
                               </span>
-                              <ExternalLink className="size-3.5 text-muted-foreground/60 shrink-0 ml-auto whitespace-nowrap transition-all duration-200 opacity-100 md:opacity-0 md:group-hover/dock:opacity-100" />
+                              <ExternalLink className="size-3.5 text-muted-foreground/60 shrink-0 mr-3 whitespace-nowrap transition-all duration-200 opacity-100 md:opacity-0 md:group-hover/dock:opacity-100" />
                             </a>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -103,8 +115,10 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
                           asChild
                           isActive={isActive}
                           className={cn(
-                            "h-10 rounded-xl px-1.5 transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground",
-                            isActive && "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                            "h-9.5 rounded-full px-0 transition-all active:scale-95",
+                            isActive
+                              ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-xs"
+                              : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50"
                           )}
                         >
                           <Link
@@ -112,17 +126,10 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
                             onClick={handleLinkClick}
                             className="flex items-center gap-2.5 w-full"
                           >
-                            <div
-                              className={cn(
-                                "size-7 flex items-center justify-center shrink-0 rounded-lg",
-                                isActive
-                                  ? "text-sidebar-accent-foreground font-medium"
-                                  : "text-muted-foreground"
-                              )}
-                            >
-                              <Icon className="size-4 shrink-0 transition-transform duration-200 group-hover/menu-item:scale-110" />
+                            <div className="size-9.5 flex items-center justify-center shrink-0 rounded-full">
+                              <Icon className="size-4.5 shrink-0 transition-transform duration-200 group-hover/menu-item:scale-110" />
                             </div>
-                            <span className="text-sm truncate whitespace-nowrap transition-all duration-200 opacity-100 md:opacity-0 md:group-hover/dock:opacity-100 md:group-hover/dock:flex-1">
+                            <span className="text-sm font-medium truncate whitespace-nowrap transition-all duration-200 opacity-100 md:opacity-0 md:group-hover/dock:opacity-100 md:group-hover/dock:flex-1">
                               {tool.title}
                             </span>
                           </Link>

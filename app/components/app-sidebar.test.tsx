@@ -48,24 +48,39 @@ describe("AppSidebar", () => {
     }
   });
 
-  it("marks the active tool based on current path", () => {
+  it("marks the active tool based on current path on desktop and mobile", () => {
     renderSidebar("/tools/jwt-decoder");
     const links = screen.getAllByRole("link", { name: "JWT Decoder" });
-    // Desktop link is wrapped in an element with data-active="true"
+    expect(links.length).toBe(2);
+
+    // Desktop link is wrapped in an element with data-active="true" and has active styling
     const desktopLink = links.find((link) => link.closest("[data-active=true]"));
     expect(desktopLink).toBeDefined();
+    expect(desktopLink).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground", "rounded-full");
 
-    // Mobile link has active highlight styling
-    const mobileLink = links.find((link) =>
-      link.className.includes("bg-sidebar-accent text-sidebar-accent-foreground")
-    );
+    // Mobile link has active highlight styling and rounded-full
+    const mobileLink = links.find((link) => !link.closest("[data-active=true]"));
     expect(mobileLink).toBeDefined();
+    expect(mobileLink).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground", "rounded-full");
   });
 
-  it("renders header branding and version badge", () => {
-    renderSidebar();
+  it("renders header branding and version badge with active state on /", () => {
+    const { container } = renderSidebar("/");
+    const brandLink = screen.getByRole("link", { name: "Tools Home" });
+    expect(brandLink).toBeInTheDocument();
+    expect(brandLink).toHaveAttribute("href", "/");
     expect(screen.getByText("Tools")).toBeInTheDocument();
     expect(screen.getByText("v1.0")).toBeInTheDocument();
+
+    const brandIcon = brandLink.firstElementChild;
+    expect(brandIcon).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground", "rounded-full");
+  });
+
+  it("renders header branding with inactive state on tool page", () => {
+    renderSidebar("/tools/jwt-decoder");
+    const brandLink = screen.getByRole("link", { name: "Tools Home" });
+    const brandIcon = brandLink.firstElementChild;
+    expect(brandIcon).toHaveClass("text-muted-foreground", "rounded-full");
   });
 
   it("links point to correct tool URLs", () => {
