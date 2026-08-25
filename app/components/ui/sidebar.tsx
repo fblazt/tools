@@ -260,7 +260,7 @@ function Sidebar({
           data-slot="sidebar-inner"
           className={cn(
             "bg-sidebar flex h-full w-full flex-col",
-            "group-data-[variant=floating]:rounded-3xl group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border/80 group-data-[variant=floating]:bg-sidebar/85 group-data-[variant=floating]:dark:bg-sidebar/80 group-data-[variant=floating]:backdrop-blur-2xl group-data-[variant=floating]:shadow-2xl group-data-[variant=floating]:shadow-black/10 group-data-[variant=floating]:dark:shadow-black/50 group-data-[variant=floating]:ring-1 group-data-[variant=floating]:ring-black/5 group-data-[variant=floating]:dark:ring-white/10 group-data-[variant=floating]:overflow-hidden"
+            "group-data-[variant=floating]:rounded-3xl group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border/80 group-data-[variant=floating]:bg-sidebar/85 group-data-[variant=floating]:dark:bg-sidebar/80 group-data-[variant=floating]:backdrop-blur-2xl group-data-[variant=floating]:shadow-2xl group-data-[variant=floating]:shadow-black/10 group-data-[variant=floating]:dark:shadow-black/50 group-data-[variant=floating]:ring-1 group-data-[variant=floating]:ring-black/5 group-data-[variant=floating]:dark:ring-white/10 group-data-[variant=floating]:overflow-visible"
           )}
         >
           {children}
@@ -391,7 +391,7 @@ function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="sidebar-content"
       data-sidebar="content"
       className={cn(
-        "flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden group-data-[collapsible=icon]:overflow-hidden",
+        "flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden group-data-[collapsible=icon]:overflow-hidden group-data-[variant=floating]:overflow-visible group-data-[variant=floating]:overflow-x-visible group-data-[variant=floating]:overflow-y-visible",
         className
       )}
       {...props}

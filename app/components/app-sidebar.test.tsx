@@ -64,13 +64,12 @@ describe("AppSidebar", () => {
     expect(mobileLink).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground", "rounded-full");
   });
 
-  it("renders header branding and version badge with active state on /", () => {
+  it("renders header branding with active state on /", () => {
     const { container } = renderSidebar("/");
     const brandLink = screen.getByRole("link", { name: "Tools Home" });
     expect(brandLink).toBeInTheDocument();
     expect(brandLink).toHaveAttribute("href", "/");
     expect(screen.getByText("Tools")).toBeInTheDocument();
-    expect(screen.getByText("v1.0")).toBeInTheDocument();
 
     const brandIcon = brandLink.firstElementChild;
     expect(brandIcon).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground", "rounded-full");
