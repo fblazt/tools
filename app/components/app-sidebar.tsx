@@ -1,15 +1,15 @@
-import * as React from "react"
-import { useLocation, Link } from "react-router"
-import { ExternalLink, Wrench } from "lucide-react"
+import * as React from "react";
+import { useLocation, Link } from "react-router";
+import { ExternalLink, Wrench } from "lucide-react";
 
-import { useSidebar } from "~/components/ui/sidebar"
-import { cn } from "~/lib/utils"
-import { tools, toolsByCategory } from "~/lib/tools-registry"
+import { useSidebar } from "~/components/ui/sidebar";
+import { cn } from "~/lib/utils";
+import { tools, toolsByCategory } from "~/lib/tools-registry";
 
 export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLElement> & { variant?: string }) {
   const location = useLocation();
   const { isMobile, setOpenMobile } = useSidebar();
-  
+
   const handleLinkClick = () => {
     if (isMobile) {
       setOpenMobile(false);
@@ -17,51 +17,38 @@ export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLEle
   };
 
   const isHomeActive = location.pathname === "/";
-  
+
   return (
     <>
-      {/* Desktop Floating Pill Dock */}
+      {/* Desktop Floating Dock */}
       <nav
         aria-label="Desktop Dock"
         className={cn(
-          "fixed left-4 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-center p-2 rounded-full border border-sidebar-border/80 bg-sidebar/85 dark:bg-sidebar/80 backdrop-blur-2xl shadow-2xl shadow-black/10 dark:shadow-black/50 ring-1 ring-black/5 dark:ring-white/10 w-13.5 select-none",
+          "fixed left-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-center gap-2 p-[10px_8px] w-14 select-none rounded-none border border-border bg-sidebar shadow-xl",
           className
         )}
         {...props}
       >
-        {/* Brand Header Pill */}
-        <div className="group/brand relative size-9.5 z-10 hover:z-30">
+        {/* Brand Button (Wrench icon) */}
+        <div className="relative size-10 flex items-center shrink-0">
           <Link
             to="/"
             onClick={handleLinkClick}
-            className="absolute left-0 top-0 flex items-center h-9.5 rounded-full focus-visible:outline-hidden"
             aria-label="Tools Home"
+            className="size-10 flex items-center justify-center rounded-none bg-primary text-primary-foreground hover:opacity-95 transition-opacity focus-visible:outline-hidden"
           >
-            <div
-              className={cn(
-                "flex items-center h-9.5 rounded-full transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden shrink-0",
-                "w-9.5 group-hover/brand:w-max group-hover/brand:shadow-xl group-hover/brand:ring-1 group-hover/brand:ring-black/5 group-hover/brand:dark:ring-white/10 group-hover/brand:bg-sidebar/95 group-hover/brand:dark:bg-sidebar/90 group-hover/brand:backdrop-blur-2xl group-hover/brand:border group-hover/brand:border-sidebar-border/80",
-                isHomeActive
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-xs"
-                  : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/80"
-              )}
-            >
-              <div className="size-9.5 rounded-full flex items-center justify-center shrink-0">
-                <Wrench className="size-4.5 shrink-0 transition-transform duration-200 group-hover/brand:scale-110" />
-              </div>
-              <span className="text-sm font-semibold tracking-tight whitespace-nowrap pr-4 pl-1 transition-all duration-200 opacity-0 group-hover/brand:opacity-100 max-w-0 group-hover/brand:max-w-xs">
-                Tools
-              </span>
-            </div>
+            <Wrench className="size-4.5 text-primary-foreground shrink-0" />
+            <span className="sr-only">Tools</span>
           </Link>
         </div>
 
-        <div className="w-6 h-px bg-sidebar-border/60 my-1.5 shrink-0" aria-hidden="true" />
+        {/* Dock Divider */}
+        <div className="w-6 h-px bg-border my-0.5" aria-hidden="true" />
 
-        {/* Tools Menu */}
-        <div className="flex flex-col items-center gap-1">
+        {/* Dock Nav Items */}
+        <div className="flex flex-col items-center gap-2">
           {toolsByCategory.map((category) => (
-            <div key={category.title} className="flex flex-col items-center gap-1">
+            <div key={category.title} className="flex flex-col items-center gap-2">
               <span className="sr-only">{category.title}</span>
               {category.tools.map((tool) => {
                 const Icon = tool.icon;
@@ -69,25 +56,30 @@ export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLEle
 
                 if (tool.externalUrl) {
                   return (
-                    <div key={tool.id} className="group/item relative size-9.5 z-10 hover:z-30">
+                    <div
+                      key={tool.id}
+                      data-active={false}
+                      className="group/item relative size-[38px] flex items-center shrink-0"
+                    >
                       <a
                         href={tool.externalUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={handleLinkClick}
+                        aria-label={tool.title}
                         className={cn(
-                          "absolute left-0 top-0 flex items-center h-9.5 rounded-full focus-visible:outline-hidden transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden shrink-0",
-                          "w-9.5 group-hover/item:w-max group-hover/item:shadow-xl group-hover/item:ring-1 group-hover/item:ring-black/5 group-hover/item:dark:ring-white/10 group-hover/item:bg-sidebar/95 group-hover/item:dark:bg-sidebar/90 group-hover/item:backdrop-blur-2xl group-hover/item:border group-hover/item:border-sidebar-border/80 group-hover/item:bg-sidebar-accent/90",
-                          "text-muted-foreground hover:text-foreground"
+                          "absolute left-0 top-0 h-[38px] w-[38px] max-w-[38px] group-hover/item:max-w-[280px] flex items-center pl-[10px] pr-0 group-hover/item:pr-4 rounded-none transition-[max-width,background-color,border-color,box-shadow] duration-200 ease-out z-10 group-hover/item:z-50 overflow-hidden focus-visible:outline-hidden",
+                          "bg-transparent text-muted-foreground",
+                          "group-hover/item:bg-card group-hover/item:border group-hover/item:border-primary group-hover/item:shadow-xl"
                         )}
                       >
-                        <div className="size-9.5 rounded-full flex items-center justify-center shrink-0">
-                          <Icon className="size-4.5 shrink-0 transition-transform duration-200 group-hover/item:scale-110" />
+                        <div className="size-[18px] flex items-center justify-center shrink-0">
+                          <Icon className="size-[18px] shrink-0 transition-colors text-muted-foreground group-hover/item:text-primary" />
                         </div>
-                        <span className="text-sm font-medium whitespace-nowrap pl-1 pr-2 transition-all duration-200 opacity-0 group-hover/item:opacity-100 max-w-0 group-hover/item:max-w-xs">
+                        <span className="font-mono text-[12.5px] font-semibold text-foreground whitespace-nowrap pl-2.5 opacity-0 group-hover/item:opacity-100 transition-opacity duration-150 delay-75">
                           {tool.title}
                         </span>
-                        <ExternalLink className="size-3.5 text-muted-foreground/70 shrink-0 mr-3.5 whitespace-nowrap transition-all duration-200 opacity-0 group-hover/item:opacity-100" />
+                        <ExternalLink className="size-3.5 text-muted-foreground ml-2 opacity-0 group-hover/item:opacity-100 transition-opacity duration-150 delay-75 shrink-0" />
                       </a>
                     </div>
                   );
@@ -97,24 +89,30 @@ export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLEle
                   <div
                     key={tool.id}
                     data-active={isActive}
-                    className="group/item relative size-9.5 z-10 hover:z-30"
+                    className="group/item relative size-[38px] flex items-center shrink-0"
                   >
                     <Link
                       to={`/tools/${tool.id}`}
                       onClick={handleLinkClick}
                       data-active={isActive}
+                      aria-label={tool.title}
                       className={cn(
-                        "absolute left-0 top-0 flex items-center h-9.5 rounded-full focus-visible:outline-hidden transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden shrink-0",
-                        "w-9.5 group-hover/item:w-max group-hover/item:shadow-xl group-hover/item:ring-1 group-hover/item:ring-black/5 group-hover/item:dark:ring-white/10 group-hover/item:bg-sidebar/95 group-hover/item:dark:bg-sidebar/90 group-hover/item:backdrop-blur-2xl group-hover/item:border group-hover/item:border-sidebar-border/80",
+                        "absolute left-0 top-0 h-[38px] w-[38px] max-w-[38px] group-hover/item:max-w-[280px] flex items-center pl-[10px] pr-0 group-hover/item:pr-4 rounded-none transition-[max-width,background-color,border-color,box-shadow] duration-200 ease-out z-10 group-hover/item:z-50 overflow-hidden focus-visible:outline-hidden",
                         isActive
-                          ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-xs"
-                          : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/80"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-transparent text-muted-foreground",
+                        "group-hover/item:bg-card group-hover/item:border group-hover/item:border-primary group-hover/item:shadow-xl"
                       )}
                     >
-                      <div className="size-9.5 rounded-full flex items-center justify-center shrink-0">
-                        <Icon className="size-4.5 shrink-0 transition-transform duration-200 group-hover/item:scale-110" />
+                      <div className="size-[18px] flex items-center justify-center shrink-0">
+                        <Icon
+                          className={cn(
+                            "size-[18px] shrink-0 transition-colors group-hover/item:text-primary",
+                            isActive ? "text-primary-foreground" : "text-muted-foreground"
+                          )}
+                        />
                       </div>
-                      <span className="text-sm font-medium whitespace-nowrap pr-4 pl-1 transition-all duration-200 opacity-0 group-hover/item:opacity-100 max-w-0 group-hover/item:max-w-xs">
+                      <span className="font-mono text-[12.5px] font-semibold text-foreground whitespace-nowrap pl-2.5 opacity-0 group-hover/item:opacity-100 transition-opacity duration-150 delay-75">
                         {tool.title}
                       </span>
                     </Link>
@@ -126,26 +124,26 @@ export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLEle
         </div>
       </nav>
 
-      {/* Mobile Floating Bottom Bar */}
+      {/* Mobile Floating Bottom Island Dock */}
       <nav
         aria-label="Mobile Navigation"
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex md:hidden items-center gap-1.5 p-1.5 px-2.5 rounded-full border border-sidebar-border/80 bg-sidebar/85 dark:bg-sidebar/80 backdrop-blur-2xl shadow-2xl shadow-black/20 dark:shadow-black/60 ring-1 ring-black/5 dark:ring-white/10 max-w-[calc(100vw-2rem)] overflow-x-auto scrollbar-none"
+        className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 flex md:hidden items-center justify-between w-[280px] h-[52px] px-2 rounded-none border border-border bg-sidebar shadow-2xl select-none"
       >
         <Link
           to="/"
           onClick={handleLinkClick}
           className={cn(
-            "size-9.5 rounded-full flex items-center justify-center shrink-0 transition-all active:scale-95",
+            "size-[38px] flex items-center justify-center rounded-none shrink-0 transition-all active:scale-95",
             isHomeActive
-              ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-xs"
-              : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50"
+              ? "bg-primary text-primary-foreground"
+              : "text-muted-foreground hover:bg-muted"
           )}
           title="Home"
           aria-label="Home"
         >
-          <Wrench className="size-4.5 shrink-0" />
+          <Wrench className="size-4 shrink-0" />
         </Link>
-        <div className="h-5 w-px bg-sidebar-border/60 shrink-0" aria-hidden="true" />
+        <div className="w-[1px] h-5 bg-border shrink-0" aria-hidden="true" />
         {tools.map((tool) => {
           const Icon = tool.icon;
           const isActive = !tool.externalUrl && location.pathname === `/tools/${tool.id}`;
@@ -159,13 +157,13 @@ export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLEle
                 rel="noopener noreferrer"
                 onClick={handleLinkClick}
                 className={cn(
-                  "size-9.5 rounded-full flex items-center justify-center shrink-0 transition-all active:scale-95",
-                  "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50"
+                  "size-[38px] flex items-center justify-center rounded-none shrink-0 transition-all active:scale-95",
+                  "text-muted-foreground hover:bg-muted"
                 )}
                 title={tool.title}
                 aria-label={tool.title}
               >
-                <Icon className="size-4.5 shrink-0" />
+                <Icon className="size-4 shrink-0" />
               </a>
             );
           }
@@ -176,15 +174,15 @@ export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLEle
               to={`/tools/${tool.id}`}
               onClick={handleLinkClick}
               className={cn(
-                "size-9.5 rounded-full flex items-center justify-center shrink-0 transition-all active:scale-95",
+                "size-[38px] flex items-center justify-center rounded-none shrink-0 transition-all active:scale-95",
                 isActive
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-xs"
-                  : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-muted"
               )}
               title={tool.title}
               aria-label={tool.title}
             >
-              <Icon className="size-4.5 shrink-0" />
+              <Icon className="size-4 shrink-0" />
             </Link>
           );
         })}

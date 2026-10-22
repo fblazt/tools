@@ -1,8 +1,7 @@
 import { Link } from "react-router";
 import type { Route } from "./+types/tools";
 import { ExternalLink } from "lucide-react";
-import { ToolsSearch } from "~/components/tools-search";
-import { ThemeToggle } from "~/components/theme-toggle";
+import { PageHeader } from "~/components/page-header";
 import { toolsByCategory } from "~/lib/tools-registry";
 
 export function meta({}: Route.MetaArgs) {
@@ -17,71 +16,65 @@ export function meta({}: Route.MetaArgs) {
 
 export default function ToolsIndex() {
   return (
-    <>
-      <header className="flex h-16 shrink-0 items-center justify-between border-b px-4 md:px-8">
-        <h1 className="text-lg font-semibold">Developer Tools</h1>
-        <div className="flex items-center gap-3">
-          <ToolsSearch />
-          <ThemeToggle />
-        </div>
-      </header>
-      <div className="flex flex-1 flex-col gap-8 p-4 pb-24 md:p-8 md:pb-8 md:pl-24">
-        <div>
-          <p className="text-muted-foreground">
-            Privacy-first utilities that run entirely in your browser — zero tracking, zero server uploads.
-          </p>
-        </div>
-        {toolsByCategory.map((category) => (
-          <section key={category.title}>
-            <h2 className="text-sm font-medium text-muted-foreground mb-3">{category.title}</h2>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {category.tools.map((tool) => {
-                const Icon = tool.icon;
-                const cardContent = (
-                  <div className="flex items-start gap-3">
-                    <div className="rounded-md bg-muted p-2 group-hover:bg-background transition-colors">
-                      <Icon className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium flex items-center gap-1.5">
-                        {tool.title}
-                        {tool.externalUrl && (
-                          <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
-                        )}
-                      </h3>
-                      <p className="text-sm text-muted-foreground mt-1">{tool.description}</p>
-                    </div>
+    <div className="flex flex-1 flex-col gap-8 pt-6 p-4 pb-24 md:p-8 md:pb-8 md:pl-24">
+      <PageHeader
+        title="Developer Tools"
+        description="Privacy-first utilities that run entirely in your browser — zero tracking, zero server uploads."
+      />
+      {toolsByCategory.map((category) => (
+        <section key={category.title}>
+          <h2 className="font-mono text-xs font-semibold tracking-wider text-primary mb-2.5 uppercase">
+            {category.title}
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {category.tools.map((tool) => {
+              const Icon = tool.icon;
+              const cardContent = (
+                <>
+                  <div className="size-10.5 rounded-none shrink-0 bg-muted border border-border flex items-center justify-center">
+                    <Icon className="size-5 text-primary group-hover:scale-105 transition-transform" />
                   </div>
-                );
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-sans font-semibold text-[15px] leading-snug flex items-center gap-1.5 text-foreground">
+                      {tool.title}
+                      {tool.externalUrl && (
+                        <ExternalLink className="size-3.5 text-muted-foreground" />
+                      )}
+                    </h3>
+                    <p className="font-mono text-xs text-muted-foreground mt-1 leading-relaxed">
+                      {tool.description}
+                    </p>
+                  </div>
+                </>
+              );
 
-                if (tool.externalUrl) {
-                  return (
-                    <a
-                      key={tool.id}
-                      href={tool.externalUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group rounded-lg border p-4 hover:bg-accent transition-colors"
-                    >
-                      {cardContent}
-                    </a>
-                  );
-                }
-
+              if (tool.externalUrl) {
                 return (
-                  <Link
+                  <a
                     key={tool.id}
-                    to={`/tools/${tool.id}`}
-                    className="group rounded-lg border p-4 hover:bg-accent transition-colors"
+                    href={tool.externalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative flex items-start gap-3.5 p-4 rounded-none border border-border bg-card hover:border-primary/60 transition-colors"
                   >
                     {cardContent}
-                  </Link>
+                  </a>
                 );
-              })}
-            </div>
-          </section>
-        ))}
-      </div>
-    </>
+              }
+
+              return (
+                <Link
+                  key={tool.id}
+                  to={`/tools/${tool.id}`}
+                  className="group relative flex items-start gap-3.5 p-4 rounded-none border border-border bg-card hover:border-primary/60 transition-colors"
+                >
+                  {cardContent}
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+    </div>
   );
 }

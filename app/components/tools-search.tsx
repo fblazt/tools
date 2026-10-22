@@ -8,20 +8,70 @@ import {
   CommandItem,
   CommandList,
 } from "~/components/ui/command";
-import { Search, Command as CommandIcon, ExternalLink } from "lucide-react";
+import { Search, ExternalLink } from "lucide-react";
 import { tools, type ToolDefinition } from "~/lib/tools-registry";
+import { cn } from "~/lib/utils";
 
-export function ToolsSearch() {
+export interface ToolsSearchProps {
+  showTrigger?: boolean;
+}
+
+export function openToolsSearch() {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("open-tools-search"));
+  }
+}
+
+export function SearchButton({ className, onClick }: { className?: string; onClick?: () => void }) {
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      openToolsSearch();
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      aria-label="Search tools (⌘K)"
+      className={cn(
+        "h-[38px] min-w-[148px] px-3.5 py-2 border border-border bg-sidebar hover:bg-muted transition-colors flex items-center justify-between gap-2.5 cursor-pointer rounded-none text-foreground select-none",
+        className
+      )}
+    >
+      <div className="flex items-center gap-2">
+        <Search className="size-4 text-muted-foreground" />
+        <span className="font-mono text-[12.5px] font-medium text-foreground">
+          Search
+        </span>
+      </div>
+      <kbd className="bg-muted border border-border px-1.5 py-0.5 font-mono text-[11px] font-semibold text-foreground rounded-none">
+        ⌘K
+      </kbd>
+    </button>
+  );
+}
+
+export function ToolsSearch({ showTrigger = true }: ToolsSearchProps = {}) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
+
+  // Listen for custom open event
+  useEffect(() => {
+    const handleOpen = () => setOpen(true);
+    window.addEventListener("open-tools-search", handleOpen);
+    return () => window.removeEventListener("open-tools-search", handleOpen);
+  }, []);
 
   // Keyboard shortcut handler
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen((open) => !open);
+        setOpen((prev) => !prev);
       }
       if (e.key === "/") {
         const target = e.target as HTMLElement;
@@ -29,7 +79,7 @@ export function ToolsSearch() {
           return;
         }
         e.preventDefault();
-        setOpen((open) => !open);
+        setOpen((prev) => !prev);
       }
     };
 
@@ -66,54 +116,92 @@ export function ToolsSearch() {
 
   return (
     <>
-      <button
-        className="flex items-center gap-2 px-3 py-2 text-sm bg-muted hover:bg-muted/80 rounded-md transition-colors"
-        aria-label="Search tools (⌘K or /)"
-        onClick={() => setOpen(true)}
-      >
-        <Search className="h-4 w-4" />
-        <span className="text-muted-foreground">Search tools...</span>
-        <span className="ml-auto flex items-center gap-1">
-          <kbd className="flex items-center gap-1 text-xs bg-background border rounded px-1.5 py-0.5">
-            <CommandIcon className="h-3 w-3" />
-            <span>K</span>
-          </kbd>
-          <kbd className="text-xs bg-background border rounded px-1.5 py-0.5">
-            /
-          </kbd>
-        </span>
-      </button>
+      {showTrigger && (
+        <SearchButton onClick={() => setOpen(true)} />
+      )}
 
-      <CommandDialog open={open} onOpenChange={setOpen} title="Search Tools" description="Type a command or search for a tool...">
-        <CommandInput
-          placeholder="Search tools..."
-          value={search}
-          onValueChange={setSearch}
-        />
-        <CommandList>
-          <CommandEmpty>No tools found.</CommandEmpty>
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Search Tools"
+        description="Search tools or commands..."
+        className="max-w-[600px] rounded-none bg-popover border border-border p-0 overflow-hidden shadow-2xl"
+      >
+        <div className="relative border-b border-border [&_[cmdk-input-wrapper]]:border-b-0 [&_svg]:text-primary [&_svg]:opacity-100">
+          <CommandInput
+            placeholder="Search tools or commands..."
+            value={search}
+            onValueChange={setSearch}
+            className="font-mono text-sm pr-16"
+          />
+          <kbd className="absolute right-3.5 top-1/2 -translate-y-1/2 bg-muted border border-border text-muted-foreground text-[10.5px] font-mono font-semibold px-2 py-0.5 rounded-none pointer-events-none select-none">
+            ESC
+          </kbd>
+        </div>
+        <CommandList className="font-sans max-h-[360px] overflow-y-auto custom-scrollbar p-1.5">
+          <CommandEmpty className="py-8 text-center text-sm font-mono text-muted-foreground">
+            No tools found.
+          </CommandEmpty>
           {Object.entries(groupedTools).map(([category, categoryTools]) => (
-            <CommandGroup key={category} heading={category}>
-              {categoryTools.map((tool) => (
-                <CommandItem
-                  key={tool.id}
-                  onSelect={() => handleToolSelect(tool)}
-                  className="flex flex-col items-start p-3"
-                >
-                  <div className="font-medium flex items-center gap-1.5 w-full">
-                    <span>{tool.title}</span>
-                    {tool.externalUrl && (
-                      <ExternalLink className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
-                    )}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {tool.description}
-                  </div>
-                </CommandItem>
-              ))}
+            <CommandGroup
+              key={category}
+              heading={category}
+              className="[&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:text-primary [&_[cmdk-group-heading]]:tracking-wider [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5"
+            >
+              {categoryTools.map((tool) => {
+                const Icon = tool.icon;
+                return (
+                  <CommandItem
+                    key={tool.id}
+                    value={`${tool.title} ${tool.category} ${tool.description} ${tool.keywords.join(" ")}`}
+                    onSelect={() => handleToolSelect(tool)}
+                    className="group/item p-2.5 rounded-none border border-transparent data-[selected=true]:border-primary data-[selected=true]:bg-muted flex items-center justify-between gap-3 cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <div className="size-[38px] flex items-center justify-center shrink-0 bg-muted border border-border rounded-none">
+                        <Icon className="size-4 text-primary shrink-0" />
+                      </div>
+                      <div className="flex flex-col min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-sans font-semibold text-sm text-foreground truncate">
+                            {tool.title}
+                          </span>
+                          <span className="font-mono text-[10.5px] text-primary shrink-0">
+                            [{tool.category}]
+                          </span>
+                          {tool.externalUrl && (
+                            <ExternalLink className="size-3 text-muted-foreground shrink-0" />
+                          )}
+                        </div>
+                        <span className="font-mono text-xs text-muted-foreground truncate">
+                          {tool.description}
+                        </span>
+                      </div>
+                    </div>
+                    <span className="hidden group-data-[selected=true]/item:flex group-aria-selected/item:flex items-center text-[11px] font-mono font-semibold text-primary bg-card border border-border px-2 py-0.5 rounded-none shrink-0">
+                      ↵ Open
+                    </span>
+                  </CommandItem>
+                );
+              })}
             </CommandGroup>
           ))}
         </CommandList>
+        <div className="bg-muted border-t border-border px-4 py-2 flex items-center justify-between">
+          <div className="flex items-center gap-3 font-mono text-[11px] text-muted-foreground">
+            <span>
+              <kbd className="bg-background border border-border px-1 py-0.5 mr-1 font-semibold text-foreground">↑↓</kbd>
+              navigate
+            </span>
+            <span>
+              <kbd className="bg-background border border-border px-1 py-0.5 mr-1 font-semibold text-foreground">↵</kbd>
+              select
+            </span>
+          </div>
+          <span className="font-mono text-[11px] font-medium text-primary">
+            Privacy-First Client Tools
+          </span>
+        </div>
       </CommandDialog>
     </>
   );

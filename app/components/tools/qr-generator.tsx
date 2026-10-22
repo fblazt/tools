@@ -64,14 +64,6 @@ export function QRGenerator() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">QR Code Generator</h1>
-        <p className="text-muted-foreground">
-          Generate custom high-resolution QR codes with live color styling and instant vector SVG or PNG download.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Section */}
         <Card>
@@ -82,22 +74,32 @@ export function QRGenerator() {
           <CardContent className="space-y-6">
             {/* Text Input */}
             <div className="space-y-2">
-              <Label htmlFor="text">Text or URL</Label>
+              <Label htmlFor="text" className="font-mono text-[12.5px] font-medium text-foreground">
+                Text or URL
+              </Label>
               <Input
                 id="text"
                 type="text"
                 placeholder="Enter text or URL"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
+                className="h-[38px] rounded-none font-mono text-[12.5px] bg-muted/30 border-border text-foreground"
               />
-              <p className="text-xs text-muted-foreground">
+              <p className="font-mono text-[11px] text-muted-foreground">
                 Enter any text, URL, or data you want to encode
               </p>
             </div>
 
             {/* Size Input */}
             <div className="space-y-2">
-              <Label htmlFor="size">Size (px): {size}</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="size" className="font-mono text-[12.5px] font-medium text-foreground">
+                  Size (px)
+                </Label>
+                <span className="font-mono text-xs font-medium text-primary">
+                  {size} px
+                </span>
+              </div>
               <Slider
                 id="size"
                 min={128}
@@ -106,8 +108,9 @@ export function QRGenerator() {
                 value={[size]}
                 onValueChange={(value) => setSize(value[0])}
                 className="w-full"
+                aria-label="Size (px)"
               />
-              <p className="text-xs text-muted-foreground">
+              <p className="font-mono text-[11px] text-muted-foreground">
                 Adjust the size of the QR code (128-512 pixels)
               </p>
             </div>
@@ -115,14 +118,16 @@ export function QRGenerator() {
             {/* Color Inputs */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="fgColor">Foreground Color</Label>
+                <Label htmlFor="fgColor" className="font-mono text-[12.5px] font-medium text-foreground">
+                  Foreground Color
+                </Label>
                 <div className="flex gap-2">
                   <Popover>
                     <PopoverTrigger asChild>
                       <button
                         type="button"
                         aria-label={`Pick foreground color, current: ${fgColor}`}
-                        className="w-16 h-10 rounded-md border-2 border-input cursor-pointer"
+                        className="w-11 h-[38px] rounded-none border border-border cursor-pointer"
                         style={{ backgroundColor: fgColor }}
                       />
                     </PopoverTrigger>
@@ -137,19 +142,21 @@ export function QRGenerator() {
                     onChange={(e) => setFgColor(e.target.value)}
                     placeholder="#000000"
                     aria-label="Foreground color hex value"
-                    className="flex-1"
+                    className="flex-1 h-[38px] rounded-none font-mono text-[12.5px] bg-muted/30 border-border text-foreground"
                   />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="bgColor">Background Color</Label>
+                <Label htmlFor="bgColor" className="font-mono text-[12.5px] font-medium text-foreground">
+                  Background Color
+                </Label>
                 <div className="flex gap-2">
                   <Popover>
                     <PopoverTrigger asChild>
                       <button
                         type="button"
                         aria-label={`Pick background color, current: ${bgColor}`}
-                        className="w-16 h-10 rounded-md border-2 border-input cursor-pointer"
+                        className="w-11 h-[38px] rounded-none border border-border cursor-pointer"
                         style={{ backgroundColor: bgColor }}
                       />
                     </PopoverTrigger>
@@ -164,7 +171,7 @@ export function QRGenerator() {
                     onChange={(e) => setBgColor(e.target.value)}
                     placeholder="#ffffff"
                     aria-label="Background color hex value"
-                    className="flex-1"
+                    className="flex-1 h-[38px] rounded-none font-mono text-[12.5px] bg-muted/30 border-border text-foreground"
                   />
                 </div>
               </div>
@@ -172,12 +179,19 @@ export function QRGenerator() {
 
             {/* Download Buttons */}
             <div className="space-y-2 pt-4">
-              <Label>Download QR Code</Label>
+              <Label className="font-mono text-[12.5px] font-medium text-foreground">Download QR Code</Label>
               <div className="flex gap-2">
-                <Button onClick={downloadQR} className="flex-1">
+                <Button
+                  onClick={downloadQR}
+                  className="flex-1 h-10 rounded-none bg-primary text-primary-foreground font-mono text-[13px] font-semibold hover:opacity-95"
+                >
                   Download PNG
                 </Button>
-                <Button onClick={downloadSVG} variant="outline" className="flex-1">
+                <Button
+                  onClick={downloadSVG}
+                  variant="outline"
+                  className="flex-1 h-10 rounded-none bg-sidebar border border-border text-foreground font-mono text-[13px] font-medium hover:bg-muted"
+                >
                   Download SVG
                 </Button>
               </div>
@@ -192,18 +206,20 @@ export function QRGenerator() {
             <CardDescription>Your generated QR code</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-center p-8 bg-muted/30 rounded-lg">
+            <div className="p-8 bg-sidebar border border-border rounded-none flex items-center justify-center">
               {text ? (
-                <QRCodeSVG
-                  id="qr-code"
-                  value={text}
-                  size={size}
-                  bgColor={bgColor}
-                  fgColor={fgColor}
-                  level="H"
-                  includeMargin
-                  style={{ maxWidth: "100%", height: "auto" }}
-                />
+                <div className="p-4 bg-white rounded-none shadow-none">
+                  <QRCodeSVG
+                    id="qr-code"
+                    value={text}
+                    size={size}
+                    bgColor={bgColor}
+                    fgColor={fgColor}
+                    level="H"
+                    includeMargin
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
+                </div>
               ) : (
                 <div className="text-center text-muted-foreground">
                   <p>Enter text to generate QR code</p>
