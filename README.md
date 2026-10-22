@@ -6,6 +6,7 @@ A modern suite of fast, privacy-first developer utilities built with React Route
 
 - **Generators & Encoding**
   - QR Code Generator - Create customizable QR codes with adjustable size and colors
+  - JSON Prettifier - Format, validate, and inspect JSON with collapsible tree blocks
 
 - **Security & Auth**
   - JWT Decoder - Decode and inspect JSON Web Tokens with expiration checking

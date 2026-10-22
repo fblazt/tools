@@ -9,6 +9,7 @@ export default {
       "/tools/jwt-decoder",
       "/tools/image-to-webp",
       "/tools/json-api-tester",
+      "/tools/json-prettifier",
     ];
   },
 } satisfies Config;
