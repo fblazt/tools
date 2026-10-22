@@ -19,7 +19,7 @@ export default function NotFound() {
         description="The requested page or tool could not be found."
         breadcrumbs={[
           { label: "Tools", href: "/" },
-          { label: "404" },
+          { label: "Not Found" },
         ]}
       />
       <div className="flex flex-1 items-center justify-center min-h-[40vh] mt-6">
