@@ -18,9 +18,8 @@ describe("tools-registry", () => {
       }
     });
 
-    it("external tools have externalUrl defined", () => {
+    it("external tools have externalUrl defined if present", () => {
       const externalTools = tools.filter((t) => t.externalUrl);
-      expect(externalTools.length).toBeGreaterThan(0);
       for (const tool of externalTools) {
         expect(tool.externalUrl).toMatch(/^https?:\/\//);
       }

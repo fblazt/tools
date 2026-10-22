@@ -1,6 +1,6 @@
 import { lazy, type ComponentType } from "react";
 import type { LucideIcon } from "lucide-react";
-import { QrCode, Shield, Image, FileText, Globe } from "lucide-react";
+import { QrCode, Shield, Image, Globe } from "lucide-react";
 
 export interface ToolDefinition {
   id: string;
@@ -51,15 +51,6 @@ export const tools: ToolDefinition[] = [
     component: lazy(() =>
       import("~/components/tools/image-to-webp").then((m) => ({ default: m.ImageToWebp }))
     ),
-  },
-  {
-    id: "markdown-previewer",
-    title: "Markdown Editor",
-    description: "Live Markdown editor and previewer with rich formatting",
-    category: "Text & Formatting",
-    keywords: ["markdown", "preview", "md", "text", "formatting", "editor"],
-    icon: FileText,
-    externalUrl: "https://md.fblazt.xyz",
   },
   {
     id: "json-api-tester",
