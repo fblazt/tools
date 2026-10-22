@@ -8,7 +8,6 @@ export default {
       "/tools/qr-generator",
       "/tools/jwt-decoder",
       "/tools/image-to-webp",
-      "/tools/markdown-previewer",
       "/tools/json-api-tester",
     ];
   },
