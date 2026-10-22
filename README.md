@@ -13,9 +13,6 @@ A modern suite of fast, privacy-first developer utilities built with React Route
 - **Media & Images**
   - Image to WebP Converter - Convert images to WebP format with quality control
 
-- **Text & Formatting**
-  - Markdown Previewer - Preview and render Markdown with GitHub Flavored Markdown support
-
 - **Network & APIs**
   - JSON API Tester - Test REST APIs with custom headers, methods, and JSON payloads
 
