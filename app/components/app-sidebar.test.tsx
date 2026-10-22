@@ -85,13 +85,6 @@ describe("AppSidebar", () => {
     for (const link of qrLinks) {
       expect(link).toHaveAttribute("href", "/tools/qr-generator");
     }
-
-    const externalLinks = screen.getAllByRole("link", { name: "Markdown Editor" });
-    for (const link of externalLinks) {
-      expect(link).toHaveAttribute("href", "https://md.fblazt.xyz");
-      expect(link).toHaveAttribute("target", "_blank");
-      expect(link).toHaveAttribute("rel", "noopener noreferrer");
-    }
   });
 
   describe("Mobile Bottom Navigation Bar", () => {

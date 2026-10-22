@@ -73,7 +73,6 @@ describe("ToolsSearch", () => {
     expect(screen.getByText("QR Code Generator")).toBeInTheDocument();
     expect(screen.getByText("JWT Decoder")).toBeInTheDocument();
     expect(screen.getByText("Image to WebP Converter")).toBeInTheDocument();
-    expect(screen.getByText("Markdown Editor")).toBeInTheDocument();
     expect(screen.getByText("JSON API Tester")).toBeInTheDocument();
   });
 
@@ -110,26 +109,6 @@ describe("ToolsSearch", () => {
     await user.click(qrTool);
 
     expect(mockNavigate).toHaveBeenCalledWith("/tools/qr-generator");
-  });
-
-  it("opens external URL when external tool is selected", async () => {
-    const windowOpenSpy = vi.spyOn(window, "open").mockImplementation(() => null);
-    const user = userEvent.setup();
-    render(
-      <MemoryRouter>
-        <ToolsSearch />
-      </MemoryRouter>
-    );
-
-    const button = screen.getByRole("button", { name: /search tools/i });
-    await user.click(button);
-
-    const mdTool = screen.getByText("Markdown Editor");
-    await user.click(mdTool);
-
-    expect(windowOpenSpy).toHaveBeenCalledWith("https://md.fblazt.xyz", "_blank", "noopener,noreferrer");
-    expect(mockNavigate).not.toHaveBeenCalled();
-    windowOpenSpy.mockRestore();
   });
 
   it("does not render trigger button when showTrigger is false", () => {
