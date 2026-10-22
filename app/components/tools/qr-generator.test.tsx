@@ -28,11 +28,11 @@ describe("QRGenerator", () => {
 
   it("renders with default values", () => {
     render(<QRGenerator />);
-    
-    expect(screen.getByText("QR Code Generator")).toBeInTheDocument();
+
     expect(screen.getByDisplayValue("https://example.com")).toBeInTheDocument();
-    expect(screen.getByText(/Size \(px\): 256/)).toBeInTheDocument();
-    
+    expect(screen.getByText("Size (px)")).toBeInTheDocument();
+    expect(screen.getByText("256 px")).toBeInTheDocument();
+
     // Check that color text inputs exist with default values
     expect(screen.getByDisplayValue("#000000")).toBeInTheDocument();
     expect(screen.getByDisplayValue("#ffffff")).toBeInTheDocument();
@@ -97,14 +97,15 @@ describe("QRGenerator", () => {
     render(<QRGenerator />);
     
     // Check initial size
-    expect(screen.getByText(/Size \(px\): 256/)).toBeInTheDocument();
-    
+    expect(screen.getByText("Size (px)")).toBeInTheDocument();
+    expect(screen.getByText("256 px")).toBeInTheDocument();
+
     // For Slider component, just verify it exists and can be clicked
     const sizeSlider = screen.getByRole("slider");
     await user.click(sizeSlider);
-    
+
     // The label should still exist
-    expect(screen.getByText(/Size \(px\):/)).toBeInTheDocument();
+    expect(screen.getByText("Size (px)")).toBeInTheDocument();
   });
 
   it("has proper form structure", () => {

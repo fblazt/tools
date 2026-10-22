@@ -39,13 +39,14 @@ function Slider({
       <SliderPrimitive.Track
         data-slot="slider-track"
         className={cn(
-          "bg-muted relative grow overflow-hidden rounded-full data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5"
+          "bg-[#e8e8e3] dark:bg-[#282828] relative grow overflow-hidden rounded-none data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5",
+          className
         )}
       >
         <SliderPrimitive.Range
           data-slot="slider-range"
           className={cn(
-            "bg-primary absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
+            "bg-[#0069a8] dark:bg-[#00a6f4] absolute rounded-none data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
           )}
         />
       </SliderPrimitive.Track>
@@ -53,7 +54,7 @@ function Slider({
         <SliderPrimitive.Thumb
           data-slot="slider-thumb"
           key={index}
-          className="border-primary ring-ring/50 block size-4 shrink-0 rounded-full border bg-white shadow-sm transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
+          className="block size-4 shrink-0 rounded-none border-2 border-[#0069a8] dark:border-[#00598a] bg-white shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00a6f4] cursor-grab active:cursor-grabbing disabled:pointer-events-none disabled:opacity-50 transition-[color,box-shadow]"
         />
       ))}
     </SliderPrimitive.Root>

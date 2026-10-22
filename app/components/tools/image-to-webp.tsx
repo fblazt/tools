@@ -177,7 +177,15 @@ export function ImageToWebp() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="quality">Quality: {quality}%</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="quality" className="font-mono text-[12.5px] font-medium text-foreground">
+                Quality
+              </Label>
+              <span className="font-mono text-xs font-medium text-[#0069a8] dark:text-[#00a6f4]">
+                {quality}%
+              </span>
+              <span className="sr-only">Quality: {quality}%</span>
+            </div>
             <Slider
               id="quality"
               min={10}
@@ -185,11 +193,12 @@ export function ImageToWebp() {
               value={[quality]}
               onValueChange={(value) => setQuality(value[0])}
               className="w-full"
+              aria-label="Quality"
             />
           </div>
 
           <div
-            className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${isDragging
+            className={`border-2 border-dashed rounded-none p-8 text-center cursor-pointer transition-colors ${isDragging
                 ? 'border-primary bg-primary/5'
                 : 'border-muted-foreground/25 hover:border-primary/50'
               }`}
@@ -247,8 +256,8 @@ export function ImageToWebp() {
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {images.map((image) => (
-                <div key={image.id} className="border rounded-lg p-4 space-y-3">
-                  <div className="aspect-video bg-muted rounded-md overflow-hidden">
+                <div key={image.id} className="border rounded-none p-4 space-y-3">
+                  <div className="aspect-video bg-muted rounded-none overflow-hidden">
                     <img
                       src={image.webpUrl}
                       alt={image.originalName}
