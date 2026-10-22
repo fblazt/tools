@@ -121,4 +121,26 @@ describe("ToolsSearch", () => {
     expect(mockNavigate).not.toHaveBeenCalled();
     windowOpenSpy.mockRestore();
   });
+
+  it("does not render trigger button when showTrigger is false", () => {
+    render(
+      <MemoryRouter>
+        <ToolsSearch showTrigger={false} />
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByLabelText("Search tools (⌘K or /)")).not.toBeInTheDocument();
+  });
+
+  it("opens command palette via keyboard shortcut when showTrigger is false", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <ToolsSearch showTrigger={false} />
+      </MemoryRouter>
+    );
+
+    await user.keyboard("{Meta>}k{/Meta}");
+    expect(screen.getByPlaceholderText("Search tools...")).toBeInTheDocument();
+  });
 });

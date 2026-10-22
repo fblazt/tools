@@ -59,4 +59,11 @@ describe("tools.$toolId route", () => {
     renderToolRoute("nonexistent-tool");
     expect(screen.getByRole("link", { name: /go back home/i })).toHaveAttribute("href", "/");
   });
+
+  it("renders breadcrumbs with Tools link and tool title", async () => {
+    renderToolRoute("jwt-decoder");
+    await waitFor(() => {
+      expect(screen.getByRole("link", { name: "Tools" })).toHaveAttribute("href", "/");
+    });
+  });
 });
