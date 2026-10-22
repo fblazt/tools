@@ -37,6 +37,11 @@ describe("tools-registry", () => {
       expect(tool?.title).toBe("JWT Decoder");
     });
 
+    it("returns correct tool for json-prettifier", () => {
+      const tool = toolsById.get("json-prettifier");
+      expect(tool?.title).toBe("JSON Prettifier");
+    });
+
     it("returns undefined for invalid ID", () => {
       expect(toolsById.get("nonexistent")).toBeUndefined();
     });

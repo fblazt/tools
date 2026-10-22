@@ -1,6 +1,6 @@
 import { lazy, type ComponentType } from "react";
 import type { LucideIcon } from "lucide-react";
-import { QrCode, Shield, Image, Globe } from "lucide-react";
+import { QrCode, Shield, Image, Globe, Braces } from "lucide-react";
 
 export interface ToolDefinition {
   id: string;
@@ -28,6 +28,17 @@ export const tools: ToolDefinition[] = [
     icon: QrCode,
     component: lazy(() =>
       import("~/components/tools/qr-generator").then((m) => ({ default: m.QRGenerator }))
+    ),
+  },
+  {
+    id: "json-prettifier",
+    title: "JSON Prettifier",
+    description: "Format, validate, and inspect JSON with collapsible tree blocks",
+    category: "Generators & Encoding",
+    keywords: ["json", "prettifier", "format", "formatter", "indent", "beautify", "tree", "validate"],
+    icon: Braces,
+    component: lazy(() =>
+      import("~/components/tools/json-prettifier").then((m) => ({ default: m.JsonPrettifier }))
     ),
   },
   {
