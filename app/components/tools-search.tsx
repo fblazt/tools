@@ -138,7 +138,7 @@ export function ToolsSearch({ showTrigger = true }: ToolsSearchProps = {}) {
             ESC
           </kbd>
         </div>
-        <CommandList className="font-sans max-h-[360px] overflow-y-auto p-1.5">
+        <CommandList className="font-sans max-h-[360px] overflow-y-auto custom-scrollbar p-1.5">
           <CommandEmpty className="py-8 text-center text-sm font-mono text-[#7c7c67] dark:text-[#abab9c]">
             No tools found.
           </CommandEmpty>
