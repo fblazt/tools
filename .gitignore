@@ -5,3 +5,12 @@
 # React Router
 /.react-router/
 /build/
+
+# Cloudflare Wrangler
+.wrangler/
+
+# Antigravity ephemeral state
+.data/iteration-counts/
+.data/dirty-bits/
+.data/.active_coordinator_id
+.data/locks/
