@@ -56,12 +56,12 @@ describe("AppSidebar", () => {
     // Desktop link is wrapped in an element with data-active="true" and has active styling
     const desktopLink = links.find((link) => link.closest("[data-active=true]"));
     expect(desktopLink).toBeDefined();
-    expect(desktopLink).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground", "rounded-full");
+    expect(desktopLink).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground", "rounded-none");
 
-    // Mobile link has active highlight styling and rounded-full
+    // Mobile link has active highlight styling and rounded-none
     const mobileLink = links.find((link) => !link.closest("[data-active=true]"));
     expect(mobileLink).toBeDefined();
-    expect(mobileLink).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground", "rounded-full");
+    expect(mobileLink).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground", "rounded-none");
   });
 
   it("renders header branding with active state on /", () => {
@@ -72,14 +72,14 @@ describe("AppSidebar", () => {
     expect(screen.getByText("Tools")).toBeInTheDocument();
 
     const brandIcon = brandLink.firstElementChild;
-    expect(brandIcon).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground", "rounded-full");
+    expect(brandIcon).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground", "rounded-none");
   });
 
   it("renders header branding with inactive state on tool page", () => {
     renderSidebar("/tools/jwt-decoder");
     const brandLink = screen.getByRole("link", { name: "Tools Home" });
     const brandIcon = brandLink.firstElementChild;
-    expect(brandIcon).toHaveClass("text-muted-foreground", "rounded-full");
+    expect(brandIcon).toHaveClass("text-muted-foreground", "rounded-none");
   });
 
   it("links point to correct tool URLs", () => {
