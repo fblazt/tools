@@ -64,20 +64,19 @@ describe("AppSidebar", () => {
     expect(mobileLink).toHaveClass("bg-[#0069a8]", "dark:bg-[#00598a]", "text-[#f0f9ff]", "rounded-none");
   });
 
-  it("renders header branding with active state on /", () => {
+  it("renders desktop header branding as solid fill pod on root and tool pages", () => {
     renderSidebar("/");
     const brandLink = screen.getByRole("link", { name: "Tools Home" });
     expect(brandLink).toBeInTheDocument();
     expect(brandLink).toHaveAttribute("href", "/");
     expect(screen.getByText("Tools")).toBeInTheDocument();
-
     expect(brandLink).toHaveClass("bg-[#0069a8]", "dark:bg-[#00598a]", "text-[#f0f9ff]", "rounded-none");
   });
 
-  it("renders header branding with inactive state on tool page", () => {
+  it("renders header branding with solid fill on tool page as well", () => {
     renderSidebar("/tools/jwt-decoder");
     const brandLink = screen.getByRole("link", { name: "Tools Home" });
-    expect(brandLink).toHaveClass("text-[#7c7c67]", "dark:text-[#abab9c]", "rounded-none");
+    expect(brandLink).toHaveClass("bg-[#0069a8]", "dark:bg-[#00598a]", "text-[#f0f9ff]", "rounded-none");
   });
 
   it("links point to correct tool URLs", () => {

@@ -19,6 +19,31 @@ describe("PageHeader", () => {
     expect(screen.getByText("A handy developer tool for transformations.")).toBeInTheDocument();
   });
 
+  it("renders default SearchButton and ThemeToggle when actions is not provided", () => {
+    render(
+      <MemoryRouter>
+        <PageHeader title="Custom Tool" />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole("button", { name: /search tools/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /toggle theme/i })).toBeInTheDocument();
+  });
+
+  it("renders custom actions when provided, replacing default actions", () => {
+    render(
+      <MemoryRouter>
+        <PageHeader
+          title="Custom Tool"
+          actions={<button type="button">Run Action</button>}
+        />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole("button", { name: "Run Action" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /search tools/i })).not.toBeInTheDocument();
+  });
+
   it("renders icon when provided", () => {
     render(
       <MemoryRouter>
@@ -70,19 +95,6 @@ describe("PageHeader", () => {
     expect(screen.getAllByTestId("test-badge").length).toBeGreaterThanOrEqual(1);
   });
 
-  it("renders actions when provided", () => {
-    render(
-      <MemoryRouter>
-        <PageHeader
-          title="Custom Tool"
-          actions={<button type="button">Run Action</button>}
-        />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByRole("button", { name: "Run Action" })).toBeInTheDocument();
-  });
-
   it("applies font-sans font-bold to title and font-mono text-sm to subtitle", () => {
     render(
       <MemoryRouter>
@@ -97,7 +109,7 @@ describe("PageHeader", () => {
     expect(heading).toHaveClass("font-sans", "font-bold");
 
     const subtitle = screen.getByText("A handy developer tool for transformations.");
-    expect(subtitle).toHaveClass("font-mono", "text-sm", "text-muted-foreground");
+    expect(subtitle).toHaveClass("font-mono", "text-sm", "text-[#7c7c67]");
   });
 
   it("renders sticky top pill element with title and icon", () => {
@@ -116,7 +128,7 @@ describe("PageHeader", () => {
     // Initially not scrolled, so opacity-0
     expect(pill).toHaveClass("opacity-0");
     expect(pill).toHaveClass("rounded-none");
-    expect(pill).toHaveClass("border-border");
+    expect(pill).toHaveClass("border-[#e8e8e3]");
   });
 
   it("toggles sticky pill state on scroll when fallback scroll listener is used", () => {

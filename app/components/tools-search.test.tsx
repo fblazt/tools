@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
-import { ToolsSearch } from "~/components/tools-search";
+import { ToolsSearch, SearchButton, openToolsSearch } from "~/components/tools-search";
 import { MemoryRouter } from "react-router";
 
 // Mock the navigate function
@@ -18,24 +18,20 @@ describe("ToolsSearch", () => {
     mockNavigate.mockClear();
   });
 
-  it("renders search button with keyboard shortcut", () => {
+  it("renders SearchButton with keyboard shortcut", () => {
     render(
       <MemoryRouter>
         <ToolsSearch />
       </MemoryRouter>
     );
 
-    expect(screen.getByLabelText("Search tools (⌘K or /)")).toBeInTheDocument();
-    expect(screen.getByText("Search tools...")).toBeInTheDocument();
-    
-    // Check for the keyboard shortcut components separately
-    expect(screen.getByText("K")).toBeInTheDocument();
-    expect(screen.getByText("/")).toBeInTheDocument();
-    const searchButton = screen.getByRole("button", { name: /search tools/i });
-    expect(searchButton.querySelector("svg.lucide-command")).toBeInTheDocument();
+    const button = screen.getByRole("button", { name: /search tools/i });
+    expect(button).toBeInTheDocument();
+    expect(screen.getByText("Search")).toBeInTheDocument();
+    expect(screen.getByText("⌘K")).toBeInTheDocument();
   });
 
-  it("opens command palette when button is clicked", async () => {
+  it("opens command palette when trigger button is clicked", async () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter>
@@ -43,10 +39,24 @@ describe("ToolsSearch", () => {
       </MemoryRouter>
     );
 
-    const searchButton = screen.getByLabelText("Search tools (⌘K or /)");
-    await user.click(searchButton);
+    const button = screen.getByRole("button", { name: /search tools/i });
+    await user.click(button);
 
-    expect(screen.getByPlaceholderText("Search tools...")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Search tools or commands...")).toBeInTheDocument();
+  });
+
+  it("opens command palette via openToolsSearch helper", () => {
+    render(
+      <MemoryRouter>
+        <ToolsSearch showTrigger={false} />
+      </MemoryRouter>
+    );
+
+    act(() => {
+      openToolsSearch();
+    });
+
+    expect(screen.getByPlaceholderText("Search tools or commands...")).toBeInTheDocument();
   });
 
   it("displays all tools when search is empty", async () => {
@@ -57,8 +67,8 @@ describe("ToolsSearch", () => {
       </MemoryRouter>
     );
 
-    const searchButton = screen.getByLabelText("Search tools (⌘K or /)");
-    await user.click(searchButton);
+    const button = screen.getByRole("button", { name: /search tools/i });
+    await user.click(button);
 
     expect(screen.getByText("QR Code Generator")).toBeInTheDocument();
     expect(screen.getByText("JWT Decoder")).toBeInTheDocument();
@@ -75,10 +85,10 @@ describe("ToolsSearch", () => {
       </MemoryRouter>
     );
 
-    const searchButton = screen.getByLabelText("Search tools (⌘K or /)");
-    await user.click(searchButton);
+    const button = screen.getByRole("button", { name: /search tools/i });
+    await user.click(button);
 
-    const searchInput = screen.getByPlaceholderText("Search tools...");
+    const searchInput = screen.getByPlaceholderText("Search tools or commands...");
     await user.type(searchInput, "qr");
 
     expect(screen.getByText("QR Code Generator")).toBeInTheDocument();
@@ -93,8 +103,8 @@ describe("ToolsSearch", () => {
       </MemoryRouter>
     );
 
-    const searchButton = screen.getByLabelText("Search tools (⌘K or /)");
-    await user.click(searchButton);
+    const button = screen.getByRole("button", { name: /search tools/i });
+    await user.click(button);
 
     const qrTool = screen.getByText("QR Code Generator");
     await user.click(qrTool);
@@ -111,8 +121,8 @@ describe("ToolsSearch", () => {
       </MemoryRouter>
     );
 
-    const searchButton = screen.getByLabelText("Search tools (⌘K or /)");
-    await user.click(searchButton);
+    const button = screen.getByRole("button", { name: /search tools/i });
+    await user.click(button);
 
     const mdTool = screen.getByText("Markdown Editor");
     await user.click(mdTool);
@@ -129,10 +139,10 @@ describe("ToolsSearch", () => {
       </MemoryRouter>
     );
 
-    expect(screen.queryByLabelText("Search tools (⌘K or /)")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /search tools/i })).not.toBeInTheDocument();
   });
 
-  it("opens command palette via keyboard shortcut when showTrigger is false", async () => {
+  it("opens command palette via keyboard shortcut ⌘K", async () => {
     const user = userEvent.setup();
     render(
       <MemoryRouter>
@@ -141,6 +151,15 @@ describe("ToolsSearch", () => {
     );
 
     await user.keyboard("{Meta>}k{/Meta}");
-    expect(screen.getByPlaceholderText("Search tools...")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Search tools or commands...")).toBeInTheDocument();
+  });
+
+  it("SearchButton calls custom onClick if provided", async () => {
+    const user = userEvent.setup();
+    const handleClick = vi.fn();
+    render(<SearchButton onClick={handleClick} />);
+
+    await user.click(screen.getByRole("button", { name: /search tools/i }));
+    expect(handleClick).toHaveBeenCalledTimes(1);
   });
 });

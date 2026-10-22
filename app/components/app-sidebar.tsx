@@ -1,15 +1,15 @@
-import * as React from "react"
-import { useLocation, Link } from "react-router"
-import { ExternalLink, Wrench } from "lucide-react"
+import * as React from "react";
+import { useLocation, Link } from "react-router";
+import { ExternalLink, Wrench } from "lucide-react";
 
-import { useSidebar } from "~/components/ui/sidebar"
-import { cn } from "~/lib/utils"
-import { tools, toolsByCategory } from "~/lib/tools-registry"
+import { useSidebar } from "~/components/ui/sidebar";
+import { cn } from "~/lib/utils";
+import { tools, toolsByCategory } from "~/lib/tools-registry";
 
 export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLElement> & { variant?: string }) {
   const location = useLocation();
   const { isMobile, setOpenMobile } = useSidebar();
-  
+
   const handleLinkClick = () => {
     if (isMobile) {
       setOpenMobile(false);
@@ -17,7 +17,7 @@ export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLEle
   };
 
   const isHomeActive = location.pathname === "/";
-  
+
   return (
     <>
       {/* Desktop Floating Dock */}
@@ -30,34 +30,20 @@ export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLEle
         {...props}
       >
         {/* Brand Button (Wrench icon) */}
-        <div className="group/brand relative size-10 flex items-center shrink-0">
+        <div className="relative size-10 flex items-center shrink-0">
           <Link
             to="/"
             onClick={handleLinkClick}
             aria-label="Tools Home"
-            className={cn(
-              "absolute left-0 top-0 h-10 w-10 group-hover/brand:w-max flex items-center px-2.5 group-hover/brand:pr-4 rounded-none transition-all duration-200 ease-out z-10 group-hover/brand:z-50 group-hover/brand:bg-white group-hover/brand:dark:bg-[#23231b] group-hover/brand:border group-hover/brand:border-[#0069a8] group-hover/brand:dark:border-[#00a6f4] group-hover/brand:shadow-2xl overflow-hidden focus-visible:outline-hidden",
-              isHomeActive
-                ? "bg-[#0069a8] dark:bg-[#00598a] text-[#f0f9ff]"
-                : "text-[#7c7c67] dark:text-[#abab9c] hover:bg-[#f4f4f0] dark:hover:bg-[#2b2b22]"
-            )}
+            className="size-10 flex items-center justify-center rounded-none bg-[#0069a8] dark:bg-[#00598a] text-[#f0f9ff] hover:opacity-95 transition-opacity focus-visible:outline-hidden"
           >
-            <div className="size-5 flex items-center justify-center shrink-0">
-              <Wrench
-                className={cn(
-                  "size-4.5 shrink-0 transition-colors group-hover/brand:text-[#0069a8] group-hover/brand:dark:text-[#00a6f4]",
-                  isHomeActive ? "text-[#f0f9ff]" : "text-[#7c7c67] dark:text-[#abab9c]"
-                )}
-              />
-            </div>
-            <span className="font-mono text-[12.5px] font-semibold text-[#0c0c09] dark:text-[#fbfbf9] whitespace-nowrap pl-2.5 opacity-0 group-hover/brand:opacity-100 transition-opacity duration-150">
-              Tools
-            </span>
+            <Wrench className="size-4.5 text-[#f0f9ff] shrink-0" />
+            <span className="sr-only">Tools</span>
           </Link>
         </div>
 
-        {/* Divider below Brand */}
-        <div className="w-6 h-[1px] bg-[#e8e8e3] dark:bg-[#282828] my-0.5 shrink-0" aria-hidden="true" />
+        {/* Dock Divider */}
+        <div className="w-6 h-px bg-[#e8e8e3] dark:bg-[#282828] my-0.5" aria-hidden="true" />
 
         {/* Dock Nav Items */}
         <div className="flex flex-col items-center gap-2">
@@ -82,17 +68,18 @@ export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLEle
                         onClick={handleLinkClick}
                         aria-label={tool.title}
                         className={cn(
-                          "absolute left-0 top-0 h-[38px] w-[38px] group-hover/item:w-max flex items-center px-2.5 group-hover/item:pr-4 rounded-none transition-all duration-200 ease-out z-10 group-hover/item:z-50 group-hover/item:bg-white group-hover/item:dark:bg-[#23231b] group-hover/item:border group-hover/item:border-[#0069a8] group-hover/item:dark:border-[#00a6f4] group-hover/item:shadow-2xl overflow-hidden focus-visible:outline-hidden",
-                          "text-[#7c7c67] dark:text-[#abab9c] hover:bg-[#f4f4f0] dark:hover:bg-[#2b2b22]"
+                          "absolute left-0 top-0 h-[38px] w-[38px] max-w-[38px] group-hover/item:max-w-[280px] flex items-center pl-[10px] pr-0 group-hover/item:pr-4 rounded-none transition-[max-width,background-color,border-color,box-shadow] duration-200 ease-out z-10 group-hover/item:z-50 overflow-hidden focus-visible:outline-hidden",
+                          "bg-transparent text-[#7c7c67] dark:text-[#abab9c]",
+                          "group-hover/item:bg-white group-hover/item:dark:bg-[#23231b] group-hover/item:border group-hover/item:border-[#0069a8] group-hover/item:dark:border-[#00a6f4] group-hover/item:shadow-xl"
                         )}
                       >
                         <div className="size-[18px] flex items-center justify-center shrink-0">
-                          <Icon className="size-[18px] shrink-0 transition-colors group-hover/item:text-[#0069a8] group-hover/item:dark:text-[#00a6f4] text-[#7c7c67] dark:text-[#abab9c]" />
+                          <Icon className="size-[18px] shrink-0 transition-colors text-[#7c7c67] dark:text-[#abab9c] group-hover/item:text-[#0069a8] group-hover/item:dark:text-[#00a6f4]" />
                         </div>
-                        <span className="font-mono text-[12.5px] font-semibold text-[#0c0c09] dark:text-[#fbfbf9] whitespace-nowrap pl-2.5 opacity-0 group-hover/item:opacity-100 transition-opacity duration-150">
+                        <span className="font-mono text-[12.5px] font-semibold text-[#0c0c09] dark:text-[#fbfbf9] whitespace-nowrap pl-2.5 opacity-0 group-hover/item:opacity-100 transition-opacity duration-150 delay-75">
                           {tool.title}
                         </span>
-                        <ExternalLink className="size-3.5 text-muted-foreground ml-2 opacity-0 group-hover/item:opacity-100 shrink-0" />
+                        <ExternalLink className="size-3.5 text-[#7c7c67] dark:text-[#abab9c] ml-2 opacity-0 group-hover/item:opacity-100 transition-opacity duration-150 delay-75 shrink-0" />
                       </a>
                     </div>
                   );
@@ -110,10 +97,11 @@ export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLEle
                       data-active={isActive}
                       aria-label={tool.title}
                       className={cn(
-                        "absolute left-0 top-0 h-[38px] w-[38px] group-hover/item:w-max flex items-center px-2.5 group-hover/item:pr-4 rounded-none transition-all duration-200 ease-out z-10 group-hover/item:z-50 group-hover/item:bg-white group-hover/item:dark:bg-[#23231b] group-hover/item:border group-hover/item:border-[#0069a8] group-hover/item:dark:border-[#00a6f4] group-hover/item:shadow-2xl overflow-hidden focus-visible:outline-hidden",
+                        "absolute left-0 top-0 h-[38px] w-[38px] max-w-[38px] group-hover/item:max-w-[280px] flex items-center pl-[10px] pr-0 group-hover/item:pr-4 rounded-none transition-[max-width,background-color,border-color,box-shadow] duration-200 ease-out z-10 group-hover/item:z-50 overflow-hidden focus-visible:outline-hidden",
                         isActive
                           ? "bg-[#0069a8] dark:bg-[#00598a] text-[#f0f9ff]"
-                          : "text-[#7c7c67] dark:text-[#abab9c] hover:bg-[#f4f4f0] dark:hover:bg-[#2b2b22]"
+                          : "bg-transparent text-[#7c7c67] dark:text-[#abab9c]",
+                        "group-hover/item:bg-white group-hover/item:dark:bg-[#23231b] group-hover/item:border group-hover/item:border-[#0069a8] group-hover/item:dark:border-[#00a6f4] group-hover/item:shadow-xl"
                       )}
                     >
                       <div className="size-[18px] flex items-center justify-center shrink-0">
@@ -124,7 +112,7 @@ export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLEle
                           )}
                         />
                       </div>
-                      <span className="font-mono text-[12.5px] font-semibold text-[#0c0c09] dark:text-[#fbfbf9] whitespace-nowrap pl-2.5 opacity-0 group-hover/item:opacity-100 transition-opacity duration-150">
+                      <span className="font-mono text-[12.5px] font-semibold text-[#0c0c09] dark:text-[#fbfbf9] whitespace-nowrap pl-2.5 opacity-0 group-hover/item:opacity-100 transition-opacity duration-150 delay-75">
                         {tool.title}
                       </span>
                     </Link>
