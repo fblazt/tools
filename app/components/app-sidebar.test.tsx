@@ -56,30 +56,28 @@ describe("AppSidebar", () => {
     // Desktop link is wrapped in an element with data-active="true" and has active styling
     const desktopLink = links.find((link) => link.closest("[data-active=true]"));
     expect(desktopLink).toBeDefined();
-    expect(desktopLink).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground", "rounded-none");
+    expect(desktopLink).toHaveClass("bg-[#0069a8]", "dark:bg-[#00598a]", "text-[#f0f9ff]", "rounded-none");
 
     // Mobile link has active highlight styling and rounded-none
     const mobileLink = links.find((link) => !link.closest("[data-active=true]"));
     expect(mobileLink).toBeDefined();
-    expect(mobileLink).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground", "rounded-none");
+    expect(mobileLink).toHaveClass("bg-[#0069a8]", "dark:bg-[#00598a]", "text-[#f0f9ff]", "rounded-none");
   });
 
   it("renders header branding with active state on /", () => {
-    const { container } = renderSidebar("/");
+    renderSidebar("/");
     const brandLink = screen.getByRole("link", { name: "Tools Home" });
     expect(brandLink).toBeInTheDocument();
     expect(brandLink).toHaveAttribute("href", "/");
     expect(screen.getByText("Tools")).toBeInTheDocument();
 
-    const brandIcon = brandLink.firstElementChild;
-    expect(brandIcon).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground", "rounded-none");
+    expect(brandLink).toHaveClass("bg-[#0069a8]", "dark:bg-[#00598a]", "text-[#f0f9ff]", "rounded-none");
   });
 
   it("renders header branding with inactive state on tool page", () => {
     renderSidebar("/tools/jwt-decoder");
     const brandLink = screen.getByRole("link", { name: "Tools Home" });
-    const brandIcon = brandLink.firstElementChild;
-    expect(brandIcon).toHaveClass("text-muted-foreground", "rounded-none");
+    expect(brandLink).toHaveClass("text-[#7c7c67]", "dark:text-[#abab9c]", "rounded-none");
   });
 
   it("links point to correct tool URLs", () => {
@@ -102,7 +100,7 @@ describe("AppSidebar", () => {
       renderSidebar();
       const mobileNav = screen.getByRole("navigation", { name: "Mobile Navigation" });
       expect(mobileNav).toBeInTheDocument();
-      expect(mobileNav).toHaveClass("fixed", "bottom-4", "md:hidden");
+      expect(mobileNav).toHaveClass("fixed", "bottom-5", "md:hidden");
     });
 
     it("renders Home button linking to root with active state on /", () => {
@@ -110,7 +108,7 @@ describe("AppSidebar", () => {
       const homeLink = screen.getByRole("link", { name: "Home" });
       expect(homeLink).toBeInTheDocument();
       expect(homeLink).toHaveAttribute("href", "/");
-      expect(homeLink).toHaveClass("bg-sidebar-accent", "text-sidebar-accent-foreground");
+      expect(homeLink).toHaveClass("bg-[#0069a8]", "dark:bg-[#00598a]", "text-[#f0f9ff]");
     });
 
     it("renders Home button with inactive state on tool page", () => {
@@ -118,7 +116,7 @@ describe("AppSidebar", () => {
       const homeLink = screen.getByRole("link", { name: "Home" });
       expect(homeLink).toBeInTheDocument();
       expect(homeLink).toHaveAttribute("href", "/");
-      expect(homeLink).toHaveClass("text-muted-foreground");
+      expect(homeLink).toHaveClass("text-[#7c7c67]", "dark:text-[#abab9c]");
     });
 
     it("renders all tools in mobile navigation bar sorted left to right", () => {
@@ -137,4 +135,3 @@ describe("AppSidebar", () => {
     });
   });
 });
-
