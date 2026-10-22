@@ -109,7 +109,7 @@ describe("PageHeader", () => {
     expect(heading).toHaveClass("font-sans", "font-bold");
 
     const subtitle = screen.getByText("A handy developer tool for transformations.");
-    expect(subtitle).toHaveClass("font-mono", "text-sm", "text-[#7c7c67]");
+    expect(subtitle).toHaveClass("font-mono", "text-sm", "text-muted-foreground");
   });
 
   it("renders sticky top pill element with title and icon", () => {
@@ -128,7 +128,7 @@ describe("PageHeader", () => {
     // Initially not scrolled, so opacity-0
     expect(pill).toHaveClass("opacity-0");
     expect(pill).toHaveClass("rounded-none");
-    expect(pill).toHaveClass("border-[#e8e8e3]");
+    expect(pill).toHaveClass("border-border");
   });
 
   it("toggles sticky pill state on scroll when fallback scroll listener is used", () => {

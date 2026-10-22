@@ -181,7 +181,7 @@ export function ImageToWebp() {
               <Label htmlFor="quality" className="font-mono text-[12.5px] font-medium text-foreground">
                 Quality
               </Label>
-              <span className="font-mono text-xs font-medium text-[#0069a8] dark:text-[#00a6f4]">
+              <span className="font-mono text-xs font-medium text-primary">
                 {quality}%
               </span>
               <span className="sr-only">Quality: {quality}%</span>
@@ -200,7 +200,7 @@ export function ImageToWebp() {
           <div
             className={`border-2 border-dashed rounded-none p-8 text-center cursor-pointer transition-colors ${isDragging
                 ? 'border-primary bg-primary/5'
-                : 'border-muted-foreground/25 hover:border-primary/50'
+                : 'border-border hover:border-primary/50'
               }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
@@ -256,7 +256,7 @@ export function ImageToWebp() {
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {images.map((image) => (
-                <div key={image.id} className="border rounded-none p-4 space-y-3">
+                <div key={image.id} className="border border-border rounded-none p-4 space-y-3">
                   <div className="aspect-video bg-muted rounded-none overflow-hidden">
                     <img
                       src={image.webpUrl}

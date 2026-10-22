@@ -71,14 +71,14 @@ export function PageHeader({
         data-slot="page-header-pill"
         data-scrolled={isScrolled}
         className={cn(
-          "fixed top-4 left-1/2 -translate-x-1/2 z-30 select-none max-w-[calc(100vw-7rem)] truncate flex items-center gap-2 px-3.5 py-1.5 rounded-none border border-[#e8e8e3] dark:border-[#282828] bg-[#fbfbf9]/90 dark:bg-[#1d1d16]/90 backdrop-blur-2xl shadow-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+          "fixed top-4 left-1/2 -translate-x-1/2 z-30 select-none max-w-[calc(100vw-7rem)] truncate flex items-center gap-2 px-3.5 py-1.5 rounded-none border border-border bg-sidebar/90 backdrop-blur-2xl shadow-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
           isScrolled
             ? "opacity-100 translate-y-0 scale-100"
             : "opacity-0 -translate-y-2 scale-95 pointer-events-none"
         )}
       >
-        {Icon && <Icon className="size-4 text-[#7c7c67] dark:text-[#abab9c] shrink-0" />}
-        <span className="text-sm font-semibold tracking-tight text-[#0c0c09] dark:text-[#fbfbf9] truncate">
+        {Icon && <Icon className="size-4 text-muted-foreground shrink-0" />}
+        <span className="text-sm font-semibold tracking-tight text-foreground truncate">
           {title}
         </span>
         {badge && <div className="shrink-0">{badge}</div>}
@@ -113,15 +113,15 @@ export function PageHeader({
         <div className="flex items-start justify-between gap-4 flex-wrap sm:flex-nowrap">
           <div className="space-y-1 min-w-0">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-2xl sm:text-3xl font-sans font-bold tracking-tight flex items-center gap-2.5 text-[#0c0c09] dark:text-[#fbfbf9]">
-                {Icon && <Icon className="size-6 sm:size-7 shrink-0 text-[#7c7c67] dark:text-[#abab9c]" />}
+              <h1 className="text-2xl sm:text-3xl font-sans font-bold tracking-tight flex items-center gap-2.5 text-foreground">
+                {Icon && <Icon className="size-6 sm:size-7 shrink-0 text-muted-foreground" />}
                 <span>{title}</span>
               </h1>
               {badge && <div className="shrink-0">{badge}</div>}
             </div>
 
             {description && (
-              <p className="font-mono text-sm text-[#7c7c67] dark:text-[#abab9c]">
+              <p className="font-mono text-sm text-muted-foreground">
                 {description}
               </p>
             )}

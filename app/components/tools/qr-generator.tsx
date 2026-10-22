@@ -83,9 +83,9 @@ export function QRGenerator() {
                 placeholder="Enter text or URL"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                className="h-[38px] rounded-none font-mono text-[12.5px] bg-[#f4f4f1] dark:bg-[#13130e] border border-[#e8e8e3] dark:border-[#282828]"
+                className="h-[38px] rounded-none font-mono text-[12.5px] bg-muted/30 border-border text-foreground"
               />
-              <p className="font-mono text-[11px] text-[#73736c] dark:text-[#abab9c]">
+              <p className="font-mono text-[11px] text-muted-foreground">
                 Enter any text, URL, or data you want to encode
               </p>
             </div>
@@ -96,7 +96,7 @@ export function QRGenerator() {
                 <Label htmlFor="size" className="font-mono text-[12.5px] font-medium text-foreground">
                   Size (px)
                 </Label>
-                <span className="font-mono text-xs font-medium text-[#0069a8] dark:text-[#00a6f4]">
+                <span className="font-mono text-xs font-medium text-primary">
                   {size} px
                 </span>
               </div>
@@ -110,7 +110,7 @@ export function QRGenerator() {
                 className="w-full"
                 aria-label="Size (px)"
               />
-              <p className="font-mono text-[11px] text-[#73736c] dark:text-[#abab9c]">
+              <p className="font-mono text-[11px] text-muted-foreground">
                 Adjust the size of the QR code (128-512 pixels)
               </p>
             </div>
@@ -127,7 +127,7 @@ export function QRGenerator() {
                       <button
                         type="button"
                         aria-label={`Pick foreground color, current: ${fgColor}`}
-                        className="w-11 h-[38px] rounded-none border border-[#e8e8e3] dark:border-[#282828] cursor-pointer"
+                        className="w-11 h-[38px] rounded-none border border-border cursor-pointer"
                         style={{ backgroundColor: fgColor }}
                       />
                     </PopoverTrigger>
@@ -142,7 +142,7 @@ export function QRGenerator() {
                     onChange={(e) => setFgColor(e.target.value)}
                     placeholder="#000000"
                     aria-label="Foreground color hex value"
-                    className="flex-1 h-[38px] rounded-none font-mono text-[12.5px] bg-[#f4f4f1] dark:bg-[#13130e] border border-[#e8e8e3] dark:border-[#282828]"
+                    className="flex-1 h-[38px] rounded-none font-mono text-[12.5px] bg-muted/30 border-border text-foreground"
                   />
                 </div>
               </div>
@@ -156,7 +156,7 @@ export function QRGenerator() {
                       <button
                         type="button"
                         aria-label={`Pick background color, current: ${bgColor}`}
-                        className="w-11 h-[38px] rounded-none border border-[#e8e8e3] dark:border-[#282828] cursor-pointer"
+                        className="w-11 h-[38px] rounded-none border border-border cursor-pointer"
                         style={{ backgroundColor: bgColor }}
                       />
                     </PopoverTrigger>
@@ -171,7 +171,7 @@ export function QRGenerator() {
                     onChange={(e) => setBgColor(e.target.value)}
                     placeholder="#ffffff"
                     aria-label="Background color hex value"
-                    className="flex-1 h-[38px] rounded-none font-mono text-[12.5px] bg-[#f4f4f1] dark:bg-[#13130e] border border-[#e8e8e3] dark:border-[#282828]"
+                    className="flex-1 h-[38px] rounded-none font-mono text-[12.5px] bg-muted/30 border-border text-foreground"
                   />
                 </div>
               </div>
@@ -183,14 +183,14 @@ export function QRGenerator() {
               <div className="flex gap-2">
                 <Button
                   onClick={downloadQR}
-                  className="flex-1 h-10 rounded-none bg-[#0069a8] dark:bg-[#00598a] text-[#f0f9ff] font-mono text-[13px] font-semibold hover:opacity-95"
+                  className="flex-1 h-10 rounded-none bg-primary text-primary-foreground font-mono text-[13px] font-semibold hover:opacity-95"
                 >
                   Download PNG
                 </Button>
                 <Button
                   onClick={downloadSVG}
                   variant="outline"
-                  className="flex-1 h-10 rounded-none bg-[#fbfbf9] dark:bg-[#1d1d16] border border-[#e8e8e3] dark:border-[#282828] text-foreground font-mono text-[13px] font-medium hover:bg-[#f4f4f0] dark:hover:bg-[#23231b]"
+                  className="flex-1 h-10 rounded-none bg-sidebar border border-border text-foreground font-mono text-[13px] font-medium hover:bg-muted"
                 >
                   Download SVG
                 </Button>
@@ -206,7 +206,7 @@ export function QRGenerator() {
             <CardDescription>Your generated QR code</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="p-8 bg-[#fbfbf9] dark:bg-[#13130e] border border-[#e8e8e3] dark:border-[#282828] rounded-none flex items-center justify-center">
+            <div className="p-8 bg-sidebar border border-border rounded-none flex items-center justify-center">
               {text ? (
                 <div className="p-4 bg-white rounded-none shadow-none">
                   <QRCodeSVG
