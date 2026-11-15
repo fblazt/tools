@@ -17,6 +17,9 @@ A modern suite of fast, privacy-first developer utilities built with React Route
 - **Network & APIs**
   - JSON API Tester - Test REST APIs with custom headers, methods, and JSON payloads
 
+- **Diagrams & Visualization**
+  - Mermaid Preview - Render and export Mermaid diagrams locally with live preview
+
 ## Tech Stack
 
 - React 19 with React Router v7 (client-side)

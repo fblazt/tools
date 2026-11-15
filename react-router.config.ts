@@ -10,6 +10,7 @@ export default {
       "/tools/image-to-webp",
       "/tools/json-api-tester",
       "/tools/json-prettifier",
+      "/tools/mermaid-preview",
     ];
   },
 } satisfies Config;
