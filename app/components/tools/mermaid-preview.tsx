@@ -3,12 +3,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertTriangle,
   Check,
+  ChevronDown,
   Clipboard,
   Copy,
   Download,
   Maximize2,
   Minus,
   Plus,
+  RotateCcw,
   Sparkles,
   Trash2,
 } from "lucide-react";
@@ -16,10 +18,17 @@ import { useTheme } from "~/components/theme-provider";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { Textarea } from "~/components/ui/textarea";
 import {
   MERMAID_PRESETS,
   computeMermaidStats,
+  findMatchingPreset,
   getMermaidPreset,
   getMermaidThemeBackground,
   rasterizeSvgToPngBlob,
@@ -32,6 +41,7 @@ import { cn } from "~/lib/utils";
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 8;
 const RENDER_DEBOUNCE_MS = 120;
+const DRAFT_STORAGE_KEY = "fblazt-mermaid-preview-draft";
 
 interface PanOffset {
   x: number;
@@ -118,8 +128,8 @@ export function MermaidPreview(): React.JSX.Element {
   const isDark = theme === "dark" ? true : theme === "light" ? false : systemPrefersDark;
 
   const initialPreset = MERMAID_PRESETS[0];
-  const [activePreset, setActivePreset] = useState<MermaidPresetId>(initialPreset.id);
   const [source, setSource] = useState<string>(initialPreset.code);
+  const [undoSource, setUndoSource] = useState<string | null>(null);
   const [renderResult, setRenderResult] = useState<MermaidRenderResult | null>(null);
   const [copied, setCopied] = useState(false);
   const [isExportingPng, setIsExportingPng] = useState(false);
@@ -134,6 +144,7 @@ export function MermaidPreview(): React.JSX.Element {
   const requestIdRef = useRef(0);
   const renderCounterRef = useRef(0);
   const hasMountedRef = useRef(false);
+  const hasHydratedDraftRef = useRef(false);
   const isMountedRef = useRef(true);
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -147,7 +158,38 @@ export function MermaidPreview(): React.JSX.Element {
     };
   }, []);
 
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined" && window.localStorage) {
+        const savedDraft = window.localStorage.getItem(DRAFT_STORAGE_KEY);
+        if (savedDraft !== null && savedDraft.trim().length > 0) {
+          setSource(savedDraft);
+        }
+      }
+    } catch {
+      // Ignore storage access errors
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydratedDraftRef.current) {
+      hasHydratedDraftRef.current = true;
+      return;
+    }
+    try {
+      if (typeof window === "undefined" || !window.localStorage) return;
+      if (source.trim().length === 0 || source.trim() === initialPreset.code.trim()) {
+        window.localStorage.removeItem(DRAFT_STORAGE_KEY);
+      } else {
+        window.localStorage.setItem(DRAFT_STORAGE_KEY, source);
+      }
+    } catch {
+      // Ignore storage access errors
+    }
+  }, [source, initialPreset.code]);
+
   const liveStats = useMemo(() => computeMermaidStats(source), [source]);
+  const matchingPreset = useMemo(() => findMatchingPreset(source), [source]);
   const isEmpty = source.trim().length === 0;
 
   useEffect(() => {
@@ -187,27 +229,38 @@ export function MermaidPreview(): React.JSX.Element {
     return Array.from({ length: count }, (_, index) => index + 1);
   }, [source]);
 
-  const handleSelectPreset = useCallback((presetId: MermaidPresetId) => {
-    const preset = getMermaidPreset(presetId);
-    setActivePreset(preset.id);
-    setSource(preset.code);
-    setZoom(1);
-    setPan({ x: 0, y: 0 });
-  }, []);
-
-  const handleSample = useCallback(() => {
-    const preset = getMermaidPreset(activePreset);
-    setSource(preset.code);
-    setZoom(1);
-    setPan({ x: 0, y: 0 });
-  }, [activePreset]);
+  const handleSelectPreset = useCallback(
+    (presetId: MermaidPresetId) => {
+      const preset = getMermaidPreset(presetId);
+      if (source.trim().length > 0) {
+        if (source.trim() !== preset.code.trim()) {
+          setUndoSource(source);
+        }
+      } else {
+        setUndoSource(null);
+      }
+      setSource(preset.code);
+      setZoom(1);
+      setPan({ x: 0, y: 0 });
+    },
+    [source]
+  );
 
   const handleClear = useCallback(() => {
+    if (source.trim().length > 0) {
+      setUndoSource(source);
+    }
     setSource("");
     setRenderResult(null);
     setZoom(1);
     setPan({ x: 0, y: 0 });
-  }, []);
+  }, [source]);
+
+  const handleUndo = useCallback(() => {
+    if (undoSource === null) return;
+    setSource(undoSource);
+    setUndoSource(null);
+  }, [undoSource]);
 
   const handleEditorScroll = (event: React.UIEvent<HTMLTextAreaElement>) => {
     if (gutterRef.current) {
@@ -240,6 +293,7 @@ export function MermaidPreview(): React.JSX.Element {
       if (navigator?.clipboard?.readText) {
         const text = await navigator.clipboard.readText();
         setSource(text);
+        setUndoSource(null);
       }
     } catch (err) {
       console.error("Failed to read clipboard:", err);
@@ -328,10 +382,17 @@ export function MermaidPreview(): React.JSX.Element {
     });
   };
 
+  const stats = renderResult?.stats ?? liveStats;
+  const exportSlug =
+    matchingPreset?.id ??
+    (stats.diagramType.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "diagram");
+  const dimensionWidth = renderResult?.width ? Math.round(renderResult.width) : null;
+  const dimensionHeight = renderResult?.height ? Math.round(renderResult.height) : null;
+
   const handleExportSvg = () => {
     if (!validSvg) return;
     const blob = new Blob([validSvg], { type: "image/svg+xml;charset=utf-8" });
-    triggerBlobDownload(blob, `mermaid-${activePreset}.svg`);
+    triggerBlobDownload(blob, `mermaid-${exportSlug}.svg`);
   };
 
   const handleExportPng = async () => {
@@ -342,7 +403,7 @@ export function MermaidPreview(): React.JSX.Element {
         scale: 2,
         backgroundColor: getMermaidThemeBackground(isDark),
       });
-      triggerBlobDownload(blob, `mermaid-${activePreset}.png`);
+      triggerBlobDownload(blob, `mermaid-${exportSlug}.png`);
     } catch (err) {
       console.error("Failed to export PNG:", err);
     } finally {
@@ -352,10 +413,6 @@ export function MermaidPreview(): React.JSX.Element {
     }
   };
 
-  const stats = renderResult?.stats ?? liveStats;
-  const dimensionWidth = renderResult?.width ? Math.round(renderResult.width) : null;
-  const dimensionHeight = renderResult?.height ? Math.round(renderResult.height) : null;
-
   return (
     <div className="w-full space-y-4">
       {/* Top Toolbar */}
@@ -363,49 +420,69 @@ export function MermaidPreview(): React.JSX.Element {
         data-testid="mermaid-toolbar"
         className="rounded-none border border-border bg-card p-2.5 px-4 flex items-center justify-between flex-wrap gap-2"
       >
-        <div className="flex items-center flex-wrap gap-1.5">
-          <span className="text-xs font-mono text-muted-foreground mr-1">Preset:</span>
-          {MERMAID_PRESETS.map((preset) => {
-            const isActive = activePreset === preset.id;
-            const label = preset.id === "er" ? "ER" : preset.label;
-            return (
+        <div className="flex items-center flex-wrap gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <Button
-                key={preset.id}
                 type="button"
                 variant="outline"
                 size="sm"
-                aria-pressed={isActive}
-                onClick={() => handleSelectPreset(preset.id)}
-                className={cn(
-                  "h-7 px-2.5 text-xs font-mono rounded-none",
-                  isActive
-                    ? "bg-[#0069a8] dark:bg-[#00598a] hover:bg-[#00598a] dark:hover:bg-[#0069a8] text-white hover:text-white border-[#0069a8] dark:border-[#00598a]"
-                    : "bg-background text-muted-foreground"
-                )}
+                className="rounded-none h-7 px-3 text-xs font-mono"
               >
-                {label}
+                <Sparkles className="h-3.5 w-3.5 mr-1.5 text-sky-400" />
+                Templates
+                <ChevronDown className="h-3.5 w-3.5 ml-1.5 opacity-70" />
               </Button>
-            );
-          })}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="rounded-none w-64">
+              {MERMAID_PRESETS.map((preset) => {
+                const isMatched = matchingPreset?.id === preset.id;
+                return (
+                  <DropdownMenuItem
+                    key={preset.id}
+                    onSelect={() => handleSelectPreset(preset.id)}
+                    className="rounded-none flex items-start justify-between gap-2 py-2 cursor-pointer font-mono"
+                  >
+                    <div className="flex flex-col gap-0.5 min-w-0">
+                      <span className="text-xs font-medium text-foreground">{preset.label}</span>
+                      <span className="text-[11px] text-muted-foreground leading-snug">
+                        {preset.description}
+                      </span>
+                    </div>
+                    {isMatched && <Check className="h-3.5 w-3.5 shrink-0 text-sky-500 mt-0.5" />}
+                  </DropdownMenuItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {!isEmpty && (
+            <span data-testid="template-status-label" className="text-xs font-mono text-muted-foreground">
+              {matchingPreset ? `Template: ${matchingPreset.label}` : "Custom syntax"}
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="rounded-none h-7 px-3 text-xs font-mono"
-            onClick={handleSample}
-          >
-            <Sparkles className="h-3.5 w-3.5 mr-1.5 text-sky-400" />
-            Sample
-          </Button>
+          {undoSource !== null && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="rounded-none h-7 px-3 text-xs font-mono"
+              onClick={handleUndo}
+            >
+              <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+              Undo
+            </Button>
+          )}
           <Button
             type="button"
             variant="outline"
             size="sm"
             className="rounded-none h-7 px-3 text-xs font-mono"
             onClick={handleClear}
+            disabled={isEmpty}
           >
             <Trash2 className="h-3.5 w-3.5 mr-1.5" />
             Clear
@@ -487,7 +564,12 @@ export function MermaidPreview(): React.JSX.Element {
 
               <Textarea
                 value={source}
-                onChange={(e) => setSource(e.target.value)}
+                onChange={(e) => {
+                  setSource(e.target.value);
+                  if (undoSource !== null) {
+                    setUndoSource(null);
+                  }
+                }}
                 onScroll={handleEditorScroll}
                 aria-label="Mermaid syntax input"
                 placeholder="Write Mermaid syntax here..."

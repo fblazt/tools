@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ThemeProvider } from "~/components/theme-provider";
 import { MermaidPreview } from "~/components/tools/mermaid-preview";
@@ -77,11 +78,11 @@ describe("MermaidPreview", () => {
     expect(screen.getByTestId("preview-card").className).toContain("lg:col-span-2");
 
     const toolbar = screen.getByTestId("mermaid-toolbar");
-    expect(within(toolbar).getByText("Preset:")).toBeInTheDocument();
-    expect(within(toolbar).getByRole("button", { name: "Flowchart" })).toHaveAttribute("aria-pressed", "true");
-    expect(within(toolbar).getByRole("button", { name: "Sequence" })).toHaveAttribute("aria-pressed", "false");
-    expect(within(toolbar).getByRole("button", { name: "ER" })).toHaveAttribute("aria-pressed", "false");
-    expect(within(toolbar).getByRole("button", { name: "State" })).toHaveAttribute("aria-pressed", "false");
+    expect(within(toolbar).queryByText("Preset:")).not.toBeInTheDocument();
+    expect(within(toolbar).queryByRole("button", { name: /sample/i })).not.toBeInTheDocument();
+    expect(within(toolbar).getByRole("button", { name: /templates/i })).toBeInTheDocument();
+    expect(within(toolbar).getByTestId("template-status-label")).toHaveTextContent("Template: Flowchart");
+    expect(within(toolbar).getByRole("button", { name: /clear/i })).toBeEnabled();
 
     const editor = screen.getByLabelText("Mermaid syntax input") as HTMLTextAreaElement;
     expect(editor.value).toContain("Client Request");
@@ -99,41 +100,88 @@ describe("MermaidPreview", () => {
     expect(within(gutter).getByText("7")).toBeInTheDocument();
   });
 
-  it("switches presets, resets pan/zoom, and supports Clear and Sample restoration", async () => {
+  it("switches templates via dropdown, tracks Custom syntax, disables Clear when empty, and supports 1-click Undo", async () => {
+    const user = userEvent.setup();
     renderWithTheme("dark");
 
     await waitFor(() => {
       expect(screen.getByTestId("syntax-status-badge")).toHaveTextContent("Valid Flowchart");
     });
 
-    // Zoom in first so we verify preset switch resets zoom back to 100%
+    // Zoom in first so we verify template switch resets zoom back to 100%
     fireEvent.click(screen.getByRole("button", { name: "Zoom in" }));
     expect(screen.getByRole("button", { name: "Reset zoom" })).toHaveTextContent("125%");
 
-    fireEvent.click(screen.getByRole("button", { name: "ER" }));
+    // Open Templates dropdown and select Sequence
+    await user.click(screen.getByRole("button", { name: /templates/i }));
+    const sequenceItem = await screen.findByRole("menuitem", { name: /Sequence/i });
+    await user.click(sequenceItem);
+
     const editor = screen.getByLabelText("Mermaid syntax input") as HTMLTextAreaElement;
-    expect(editor.value).toContain("erDiagram");
-    expect(screen.getByRole("button", { name: "ER" })).toHaveAttribute("aria-pressed", "true");
+    expect(editor.value).toContain("sequenceDiagram");
+    expect(screen.getByTestId("template-status-label")).toHaveTextContent("Template: Sequence");
     expect(screen.getByRole("button", { name: "Reset zoom" })).toHaveTextContent("100%");
 
     await waitFor(() => {
-      expect(screen.getByTestId("syntax-status-badge")).toHaveTextContent("Valid ER Diagram");
+      expect(screen.getByTestId("syntax-status-badge")).toHaveTextContent("Valid Sequence");
     });
 
-    // Clear editor
-    fireEvent.click(screen.getByRole("button", { name: /clear/i }));
+    // Edit syntax manually -> indicator switches to Custom syntax and clears prior Undo
+    const customDiagram = "flowchart LR\n  CustomStart --> CustomEnd";
+    fireEvent.change(editor, { target: { value: customDiagram } });
+    expect(screen.getByTestId("template-status-label")).toHaveTextContent("Custom syntax");
+    expect(screen.queryByRole("button", { name: /undo/i })).not.toBeInTheDocument();
+
+    // Switching templates from custom syntax enables Undo recovery
+    await user.click(screen.getByRole("button", { name: /templates/i }));
+    const erItem = await screen.findByRole("menuitem", { name: /ER Diagram/i });
+    await user.click(erItem);
+    expect(editor.value).toContain("erDiagram");
+    expect(screen.getByTestId("template-status-label")).toHaveTextContent("Template: ER Diagram");
+
+    const undoBtn = screen.getByRole("button", { name: /undo/i });
+    fireEvent.click(undoBtn);
+    expect(editor.value).toBe(customDiagram);
+    expect(screen.getByTestId("template-status-label")).toHaveTextContent("Custom syntax");
+    expect(screen.queryByRole("button", { name: /undo/i })).not.toBeInTheDocument();
+
+    // Clear editor -> disables Clear, hides template status, and enables Undo recovery
+    const clearBtn = screen.getByRole("button", { name: /clear/i });
+    fireEvent.click(clearBtn);
     expect(editor.value).toBe("");
+    expect(clearBtn).toBeDisabled();
+    expect(screen.queryByTestId("template-status-label")).not.toBeInTheDocument();
     expect(screen.getByTestId("syntax-status-badge")).toHaveTextContent("Empty");
     expect(screen.getByText(/Enter Mermaid syntax on the left/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^SVG$/i })).toBeDisabled();
     expect(screen.getByRole("button", { name: /^PNG$/i })).toBeDisabled();
 
-    // Sample restores the active preset (ER)
-    fireEvent.click(screen.getByRole("button", { name: /sample/i }));
-    expect(editor.value).toContain("erDiagram");
+    fireEvent.click(screen.getByRole("button", { name: /undo/i }));
+    expect(editor.value).toBe(customDiagram);
+    expect(screen.getByTestId("template-status-label")).toHaveTextContent("Custom syntax");
+    expect(clearBtn).toBeEnabled();
+  });
+
+  it("persists non-default drafts in localStorage across remount and clears on Clear", async () => {
+    const customDraft = "flowchart TD\n  DraftA --> DraftB";
+    const { unmount } = renderWithTheme("dark");
+
+    const editor = screen.getByLabelText("Mermaid syntax input") as HTMLTextAreaElement;
+    fireEvent.change(editor, { target: { value: customDraft } });
+
+    expect(localStorage.getItem("fblazt-mermaid-preview-draft")).toBe(customDraft);
+    unmount();
+
+    renderWithTheme("dark");
+
     await waitFor(() => {
-      expect(screen.getByTestId("syntax-status-badge")).toHaveTextContent("Valid ER Diagram");
+      const remountedEditor = screen.getByLabelText("Mermaid syntax input") as HTMLTextAreaElement;
+      expect(remountedEditor.value).toBe(customDraft);
     });
+    expect(screen.getByTestId("template-status-label")).toHaveTextContent("Custom syntax");
+
+    fireEvent.click(screen.getByRole("button", { name: /clear/i }));
+    expect(localStorage.getItem("fblazt-mermaid-preview-draft")).toBeNull();
   });
 
   it("displays Invalid Syntax badge and accessible error alert when syntax fails", async () => {
@@ -339,6 +387,7 @@ describe("MermaidPreview", () => {
   });
 
   it("ignores stale async render responses when source changes rapidly", async () => {
+    const user = userEvent.setup();
     let resolveFirst!: (value: mermaidLib.MermaidRenderResult) => void;
     const firstPromise = new Promise<mermaidLib.MermaidRenderResult>((resolve) => {
       resolveFirst = resolve;
@@ -350,7 +399,8 @@ describe("MermaidPreview", () => {
 
     renderWithTheme("dark");
 
-    fireEvent.click(screen.getByRole("button", { name: "Sequence" }));
+    await user.click(screen.getByRole("button", { name: /templates/i }));
+    await user.click(await screen.findByRole("menuitem", { name: /Sequence/i }));
 
     await waitFor(() => {
       expect(screen.getByTestId("preview-dimensions-badge")).toHaveTextContent("SVG • 320×180");
