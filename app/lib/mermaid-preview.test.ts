@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   MERMAID_PRESETS,
   getMermaidPreset,
+  findMatchingPreset,
   detectMermaidDiagramType,
   computeMermaidStats,
   getMermaidThemeBackground,
@@ -36,17 +37,33 @@ describe("Mermaid Preview Engine", () => {
   });
 
   describe("Presets", () => {
-    it("exports all four starter presets and resolves by ID", () => {
-      expect(MERMAID_PRESETS).toHaveLength(4);
+    it("exports all five starter presets with descriptions and resolves by ID", () => {
+      expect(MERMAID_PRESETS).toHaveLength(5);
       expect(getMermaidPreset("flowchart").label).toBe("Flowchart");
       expect(getMermaidPreset("sequence").label).toBe("Sequence");
       expect(getMermaidPreset("er").label).toBe("ER Diagram");
       expect(getMermaidPreset("state").label).toBe("State");
+      expect(getMermaidPreset("class").label).toBe("Class");
+
+      for (const preset of MERMAID_PRESETS) {
+        expect(preset.description.trim().length).toBeGreaterThan(0);
+      }
     });
 
     it("falls back to flowchart preset for an unknown preset ID", () => {
       // @ts-expect-error testing runtime fallback for invalid preset id
       expect(getMermaidPreset("unknown").id).toBe("flowchart");
+    });
+
+    it("matches presets by exact or whitespace-padded source and returns undefined for custom syntax", () => {
+      const sequencePreset = getMermaidPreset("sequence");
+      const classPreset = getMermaidPreset("class");
+
+      expect(findMatchingPreset(sequencePreset.code)?.id).toBe("sequence");
+      expect(findMatchingPreset(`  \n${classPreset.code}\n  `)?.id).toBe("class");
+      expect(findMatchingPreset(`${sequencePreset.code}\n  C->>A: Retry`)).toBeUndefined();
+      expect(findMatchingPreset("flowchart TD\n  X --> Y")).toBeUndefined();
+      expect(findMatchingPreset("   \n  ")).toBeUndefined();
     });
   });
 
@@ -195,6 +212,16 @@ describe("Mermaid Preview Engine", () => {
         nodeCount: 5,
         edgeCount: 6,
         diagramType: "State",
+      });
+    });
+
+    it("computes accurate stats for the Class preset", () => {
+      const stats = computeMermaidStats(getMermaidPreset("class").code);
+      expect(stats).toEqual({
+        lineCount: 14,
+        nodeCount: 3,
+        edgeCount: 2,
+        diagramType: "Class",
       });
     });
   });

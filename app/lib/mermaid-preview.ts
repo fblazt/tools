@@ -1,9 +1,10 @@
-export type MermaidPresetId = "flowchart" | "sequence" | "er" | "state";
+export type MermaidPresetId = "flowchart" | "sequence" | "er" | "state" | "class";
 
 export interface MermaidPreset {
   id: MermaidPresetId;
   label: string;
   shortLabel: string;
+  description: string;
   code: string;
 }
 
@@ -33,6 +34,7 @@ const FLOWCHART_PRESET: MermaidPreset = {
   id: "flowchart",
   label: "Flowchart",
   shortLabel: "Flow",
+  description: "API gateway request routing",
   code: [
     "flowchart LR",
     '  A["Client Request"] --> B{"Auth Valid?"}',
@@ -48,6 +50,7 @@ const SEQUENCE_PRESET: MermaidPreset = {
   id: "sequence",
   label: "Sequence",
   shortLabel: "Seq",
+  description: "OAuth token & API exchange",
   code: [
     "sequenceDiagram",
     "  autonumber",
@@ -65,6 +68,7 @@ const ER_PRESET: MermaidPreset = {
   id: "er",
   label: "ER Diagram",
   shortLabel: "ER",
+  description: "User, session & token schema",
   code: [
     "erDiagram",
     "  USER ||--o{ SESSION : starts",
@@ -91,6 +95,7 @@ const STATE_PRESET: MermaidPreset = {
   id: "state",
   label: "State",
   shortLabel: "State",
+  description: "Parser lifecycle transitions",
   code: [
     "stateDiagram-v2",
     "  [*] --> Idle",
@@ -102,16 +107,47 @@ const STATE_PRESET: MermaidPreset = {
   ].join("\n"),
 };
 
+const CLASS_PRESET: MermaidPreset = {
+  id: "class",
+  label: "Class",
+  shortLabel: "Class",
+  description: "Service & repository contracts",
+  code: [
+    "classDiagram",
+    "  class AuthService {",
+    "    -UserRepository repo",
+    "    +login(email, password) Session",
+    "  }",
+    "  class UserRepository {",
+    "    <<interface>>",
+    "    +findByEmail(email) User",
+    "  }",
+    "  class PostgresUserRepository {",
+    "    +findByEmail(email) User",
+    "  }",
+    "  AuthService --> UserRepository : depends on",
+    "  UserRepository <|.. PostgresUserRepository : implements",
+  ].join("\n"),
+};
+
 export const MERMAID_PRESETS: readonly MermaidPreset[] = [
   FLOWCHART_PRESET,
   SEQUENCE_PRESET,
   ER_PRESET,
   STATE_PRESET,
+  CLASS_PRESET,
 ];
 
 /** Look up a starter preset by ID, falling back to the default flowchart preset. */
 export function getMermaidPreset(id: MermaidPresetId): MermaidPreset {
   return MERMAID_PRESETS.find((preset) => preset.id === id) ?? FLOWCHART_PRESET;
+}
+
+/** Find the starter preset matching the provided Mermaid source (trimmed). */
+export function findMatchingPreset(source: string): MermaidPreset | undefined {
+  const trimmed = source.trim();
+  if (!trimmed) return undefined;
+  return MERMAID_PRESETS.find((preset) => preset.code.trim() === trimmed);
 }
 
 const DIAGRAM_TYPE_KEYWORDS: Record<string, string> = {
@@ -337,6 +373,77 @@ function countStateStats(lines: string[]): { nodeCount: number; edgeCount: numbe
   return { nodeCount: nodes.size, edgeCount };
 }
 
+function countClassStats(lines: string[]): { nodeCount: number; edgeCount: number } {
+  const nodes = new Set<string>();
+  let edgeCount = 0;
+  let braceDepth = 0;
+
+  for (const line of lines) {
+    const lower = line.toLowerCase();
+    if (lower.startsWith("classdiagram")) continue;
+
+    if (braceDepth > 0) {
+      const opens = (line.match(/\{/g) ?? []).length;
+      const closes = (line.match(/\}/g) ?? []).length;
+      braceDepth = Math.max(0, braceDepth + opens - closes);
+      continue;
+    }
+
+    if (
+      lower.startsWith("direction ") ||
+      lower.startsWith("note ") ||
+      lower.startsWith("classdef ") ||
+      lower.startsWith("cssclass ") ||
+      lower.startsWith("style ") ||
+      lower.startsWith("link ") ||
+      lower.startsWith("callback ") ||
+      lower.startsWith("acctitle") ||
+      lower.startsWith("accdescr")
+    ) {
+      continue;
+    }
+
+    if (lower.startsWith("namespace ")) {
+      if (line.includes("{") && !line.includes("}")) {
+        braceDepth += 1;
+      }
+      continue;
+    }
+
+    const classBlockMatch = line.match(/^class\s+([A-Za-z0-9_~-]+)(?:\[[^\]]*\])?\s*(?:\{(.*))?$/);
+    if (classBlockMatch) {
+      nodes.add(classBlockMatch[1]);
+      if (classBlockMatch[2] !== undefined && !classBlockMatch[2].includes("}")) {
+        braceDepth += 1;
+      }
+      continue;
+    }
+
+    const relationMatch = line.match(
+      /^([A-Za-z0-9_~]+)(?:\s+"[^"]*")?\s*(?:<\|--|--\|>|<\|\.\.|\.\.\|>|\*--|-->|o--|--\*|--o|<--|\.\.>|\.\.<|--|\.\.)\s*(?:"[^"]*"\s+)?([A-Za-z0-9_~]+)(?:\s*:.*)?$/,
+    );
+    if (relationMatch) {
+      edgeCount += 1;
+      nodes.add(relationMatch[1]);
+      nodes.add(relationMatch[2]);
+      continue;
+    }
+
+    const annotationMatch = line.match(/^<<[^>]+>>\s+([A-Za-z0-9_~-]+)$/);
+    if (annotationMatch) {
+      nodes.add(annotationMatch[1]);
+      continue;
+    }
+
+    const memberMatch = line.match(/^([A-Za-z0-9_~-]+)\s*:\s*.+$/);
+    if (memberMatch) {
+      nodes.add(memberMatch[1]);
+    }
+  }
+
+  return { nodeCount: nodes.size, edgeCount };
+}
+
 /** Detect the human-readable Mermaid diagram type from source syntax. */
 export function detectMermaidDiagramType(source: string): string {
   if (source.trim().length === 0) return "Empty";
@@ -370,6 +477,9 @@ export function computeMermaidStats(source: string): MermaidDiagramStats {
   }
   if (diagramType === "State") {
     return { lineCount, diagramType, ...countStateStats(lines) };
+  }
+  if (diagramType === "Class") {
+    return { lineCount, diagramType, ...countClassStats(lines) };
   }
 
   return { lineCount, nodeCount: 0, edgeCount: 0, diagramType };
