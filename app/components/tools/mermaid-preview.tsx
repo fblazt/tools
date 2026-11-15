@@ -414,7 +414,7 @@ export function MermaidPreview(): React.JSX.Element {
   };
 
   return (
-    <div className="w-full space-y-4">
+    <div data-testid="mermaid-root" className="w-full flex-1 flex flex-col gap-4 min-h-0">
       {/* Top Toolbar */}
       <div
         data-testid="mermaid-toolbar"
@@ -491,9 +491,15 @@ export function MermaidPreview(): React.JSX.Element {
       </div>
 
       {/* Main 1:2 Split Grid */}
-      <div data-testid="mermaid-workspace-grid" className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+      <div
+        data-testid="mermaid-workspace-grid"
+        className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start lg:items-stretch lg:flex-1 lg:grid-rows-[minmax(0,1fr)] min-h-0"
+      >
         {/* Syntax Card (1/3 on desktop) */}
-        <Card data-testid="syntax-card" className="rounded-none border-border flex flex-col lg:col-span-1">
+        <Card
+          data-testid="syntax-card"
+          className="rounded-none border-border flex flex-col lg:col-span-1 lg:h-full min-h-0"
+        >
           <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-2 space-y-0 p-4 border-b border-border">
             <div className="flex items-center gap-2 flex-wrap">
               <CardTitle className="text-sm font-semibold font-mono">Syntax</CardTitle>
@@ -547,7 +553,7 @@ export function MermaidPreview(): React.JSX.Element {
             </Button>
           </CardHeader>
 
-          <CardContent className="p-0 flex-1 flex flex-col">
+          <CardContent className="p-0 flex-1 flex flex-col min-h-0">
             <div className="flex flex-row min-h-[220px] lg:min-h-[460px] flex-1 bg-background">
               <div
                 ref={gutterRef}
@@ -602,7 +608,10 @@ export function MermaidPreview(): React.JSX.Element {
         </Card>
 
         {/* Preview Card (2/3 on desktop) */}
-        <Card data-testid="preview-card" className="rounded-none border-border flex flex-col lg:col-span-2">
+        <Card
+          data-testid="preview-card"
+          className="rounded-none border-border flex flex-col lg:col-span-2 lg:h-full min-h-0"
+        >
           <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-2 space-y-0 p-4 border-b border-border">
             <CardTitle className="text-sm font-semibold font-mono">Preview</CardTitle>
 
@@ -680,7 +689,7 @@ export function MermaidPreview(): React.JSX.Element {
             </div>
           </CardHeader>
 
-          <CardContent className="p-0 flex-1 flex flex-col">
+          <CardContent className="p-0 flex-1 flex flex-col min-h-0">
             <div
               ref={viewportRef}
               data-testid="preview-viewport"

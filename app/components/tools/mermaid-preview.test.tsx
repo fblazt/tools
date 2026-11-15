@@ -72,10 +72,23 @@ describe("MermaidPreview", () => {
   it("renders 1:2 desktop layout grid and initial Flowchart preset", async () => {
     renderWithTheme("dark");
 
+    const root = screen.getByTestId("mermaid-root");
+    expect(root.className).toContain("flex-1");
+    expect(root.className).toContain("flex-col");
+
     const grid = screen.getByTestId("mermaid-workspace-grid");
     expect(grid.className).toContain("lg:grid-cols-3");
-    expect(screen.getByTestId("syntax-card").className).toContain("lg:col-span-1");
-    expect(screen.getByTestId("preview-card").className).toContain("lg:col-span-2");
+    expect(grid.className).toContain("items-start");
+    expect(grid.className).toContain("lg:items-stretch");
+    expect(grid.className).toContain("lg:flex-1");
+
+    const syntaxCard = screen.getByTestId("syntax-card");
+    expect(syntaxCard.className).toContain("lg:col-span-1");
+    expect(syntaxCard.className).toContain("lg:h-full");
+
+    const previewCard = screen.getByTestId("preview-card");
+    expect(previewCard.className).toContain("lg:col-span-2");
+    expect(previewCard.className).toContain("lg:h-full");
 
     const toolbar = screen.getByTestId("mermaid-toolbar");
     expect(within(toolbar).queryByText("Preset:")).not.toBeInTheDocument();
