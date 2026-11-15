@@ -220,6 +220,57 @@ describe("MermaidPreview", () => {
     expect(resetBtn).toHaveTextContent("100%");
   });
 
+  it("preserves native pixel SVG host sizing, fits wide diagrams accurately, and zooms up to 800%", async () => {
+    renderMermaidDiagramMock.mockImplementation(async (_id, source) =>
+      createValidResult(source, 1933, 851, 14)
+    );
+
+    renderWithTheme("dark");
+
+    const wrapper = await screen.findByTestId("preview-transform-wrapper");
+    expect(wrapper.className).toContain("shrink-0");
+
+    const svgHost = screen.getByTestId("preview-svg-host");
+    expect(svgHost).toHaveStyle({ width: "1933px", height: "851px" });
+
+    const viewport = screen.getByTestId("preview-viewport");
+    Object.defineProperty(viewport, "clientWidth", { value: 950, configurable: true });
+    Object.defineProperty(viewport, "clientHeight", { value: 460, configurable: true });
+
+    const resetBtn = screen.getByRole("button", { name: "Reset zoom" });
+    fireEvent.click(screen.getByRole("button", { name: /fit/i }));
+    expect(resetBtn).toHaveTextContent("47%");
+    expect(wrapper).toHaveStyle({ transform: "translate(0px, 0px) scale(0.47)" });
+
+    // Reset to 100% and step through adaptive zoom increments up to 800%
+    fireEvent.click(resetBtn);
+    expect(resetBtn).toHaveTextContent("100%");
+
+    const zoomInBtn = screen.getByRole("button", { name: "Zoom in" });
+    const expectedZoomSteps = [
+      "125%",
+      "150%",
+      "175%",
+      "200%",
+      "250%",
+      "300%",
+      "350%",
+      "400%",
+      "500%",
+      "600%",
+      "700%",
+      "800%",
+    ];
+
+    for (const label of expectedZoomSteps) {
+      fireEvent.click(zoomInBtn);
+      expect(resetBtn).toHaveTextContent(label);
+    }
+
+    expect(wrapper).toHaveStyle({ transform: "translate(0px, 0px) scale(8)" });
+    expect(zoomInBtn).toBeDisabled();
+  });
+
   it("downloads SVG and PNG with dark theme background (#13130E)", async () => {
     const createObjectURLMock = vi.fn().mockReturnValue("blob:mermaid-export");
     const revokeObjectURLMock = vi.fn();

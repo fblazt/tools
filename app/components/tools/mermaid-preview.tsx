@@ -29,9 +29,8 @@ import {
 } from "~/lib/mermaid-preview";
 import { cn } from "~/lib/utils";
 
-const MIN_ZOOM = 0.25;
-const MAX_ZOOM = 3;
-const ZOOM_STEP = 0.25;
+const MIN_ZOOM = 0.1;
+const MAX_ZOOM = 8;
 const RENDER_DEBOUNCE_MS = 120;
 
 interface PanOffset {
@@ -48,6 +47,22 @@ interface DragState {
 
 function clampZoom(value: number): number {
   return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Math.round(value * 100) / 100));
+}
+
+function stepZoom(currentZoom: number, direction: 1 | -1): number {
+  const step =
+    direction === 1
+      ? currentZoom < 2
+        ? 0.25
+        : currentZoom < 4
+          ? 0.5
+          : 1
+      : currentZoom <= 2
+        ? 0.25
+        : currentZoom <= 4
+          ? 0.5
+          : 1;
+  return clampZoom(currentZoom + direction * step);
 }
 
 function getSystemPrefersDark(): boolean {
@@ -235,11 +250,11 @@ export function MermaidPreview(): React.JSX.Element {
   const syntaxError = !isEmpty && renderResult && !renderResult.isValid ? renderResult.error ?? "Invalid Mermaid syntax." : null;
 
   const handleZoomOut = () => {
-    setZoom((prev) => clampZoom(prev - ZOOM_STEP));
+    setZoom((prev) => stepZoom(prev, -1));
   };
 
   const handleZoomIn = () => {
-    setZoom((prev) => clampZoom(prev + ZOOM_STEP));
+    setZoom((prev) => stepZoom(prev, 1));
   };
 
   const handleResetZoom = () => {
@@ -306,8 +321,11 @@ export function MermaidPreview(): React.JSX.Element {
 
   const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
     if (!validSvg) return;
-    const delta = event.deltaY < 0 ? 0.1 : -0.1;
-    setZoom((prev) => clampZoom(prev + delta));
+    const direction = event.deltaY < 0 ? 1 : -1;
+    setZoom((prev) => {
+      const step = Math.max(0.05, prev * 0.12);
+      return clampZoom(prev + direction * step);
+    });
   };
 
   const handleExportSvg = () => {
@@ -620,9 +638,22 @@ export function MermaidPreview(): React.JSX.Element {
                       transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
                       transformOrigin: "center center",
                     }}
-                    className="p-6 transition-transform duration-75 ease-out [&_svg]:max-w-none"
-                    dangerouslySetInnerHTML={{ __html: validSvg }}
-                  />
+                    className={cn(
+                      "p-6 shrink-0",
+                      !isDragging && "transition-transform duration-75 ease-out"
+                    )}
+                  >
+                    <div
+                      data-testid="preview-svg-host"
+                      style={
+                        renderResult?.width && renderResult?.height
+                          ? { width: `${renderResult.width}px`, height: `${renderResult.height}px` }
+                          : undefined
+                      }
+                      className="[&_svg]:block [&_svg]:w-full! [&_svg]:h-full! [&_svg]:max-w-none!"
+                      dangerouslySetInnerHTML={{ __html: validSvg }}
+                    />
+                  </div>
                   {dimensionWidth !== null && dimensionHeight !== null && (
                     <Badge
                       data-testid="preview-dimensions-badge"
