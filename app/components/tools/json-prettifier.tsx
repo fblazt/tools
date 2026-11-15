@@ -261,7 +261,7 @@ export function JsonPrettifier(): React.JSX.Element {
   };
 
   return (
-    <div className="w-full space-y-4">
+    <div data-testid="prettifier-root" className="w-full flex-1 flex flex-col gap-4 min-h-0">
       {/* 1. Global Top Toolbar */}
       <div
         data-testid="prettifier-toolbar"
@@ -324,9 +324,12 @@ export function JsonPrettifier(): React.JSX.Element {
       </div>
 
       {/* 2. Main Two Columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+      <div
+        data-testid="prettifier-workspace-grid"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start lg:items-stretch lg:flex-1 lg:grid-rows-[minmax(0,1fr)] min-h-0"
+      >
         {/* Left Column: Input Card */}
-        <Card className="rounded-none border-border flex flex-col">
+        <Card data-testid="json-input-card" className="rounded-none border-border flex flex-col lg:h-full min-h-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 p-4 border-b border-border">
             <div className="flex items-center gap-2">
               <CardTitle className="text-sm font-semibold font-mono">Input</CardTitle>
@@ -348,7 +351,7 @@ export function JsonPrettifier(): React.JSX.Element {
               )}
             </div>
           </CardHeader>
-          <CardContent className="p-0 flex-1 flex flex-col">
+          <CardContent className="p-0 flex-1 flex flex-col min-h-0">
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -377,7 +380,7 @@ export function JsonPrettifier(): React.JSX.Element {
         </Card>
 
         {/* Right Column: Output Card */}
-        <Card className="rounded-none border-border flex flex-col">
+        <Card data-testid="json-output-card" className="rounded-none border-border flex flex-col lg:h-full min-h-0">
           <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-2 space-y-0 p-4 border-b border-border">
             <CardTitle className="text-sm font-semibold font-mono">Output</CardTitle>
             <div className="flex items-center flex-wrap gap-2">
@@ -435,13 +438,13 @@ export function JsonPrettifier(): React.JSX.Element {
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="p-0 flex-1 flex flex-col">
+          <CardContent className="p-0 flex-1 flex flex-col min-h-0">
             {isEmpty ? (
-              <div className="flex items-center justify-center min-h-[460px] p-6 text-center text-muted-foreground font-mono text-xs md:text-sm">
+              <div className="flex flex-1 items-center justify-center min-h-[460px] p-6 text-center text-muted-foreground font-mono text-xs md:text-sm">
                 Enter or paste JSON on the left to inspect and format.
               </div>
             ) : !validation.isValid && validation.error ? (
-              <div className="p-4 min-h-[460px]">
+              <div className="p-4 flex-1 min-h-[460px]">
                 <div className="rounded-none border border-destructive/50 bg-destructive/10 text-destructive text-sm font-mono p-3 space-y-1">
                   <div className="font-semibold">Syntax Error:</div>
                   <div>{validation.error.message}</div>

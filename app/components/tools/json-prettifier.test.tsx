@@ -21,6 +21,15 @@ describe("JsonPrettifier", () => {
   it("renders default layout with prettifier-toolbar, input card, output card, and footers", () => {
     render(<JsonPrettifier />);
 
+    const root = screen.getByTestId("prettifier-root");
+    expect(root).toHaveClass("flex-1", "flex-col");
+
+    const workspaceGrid = screen.getByTestId("prettifier-workspace-grid");
+    expect(workspaceGrid).toHaveClass("items-start", "lg:items-stretch", "lg:flex-1");
+
+    expect(screen.getByTestId("json-input-card")).toHaveClass("lg:h-full");
+    expect(screen.getByTestId("json-output-card")).toHaveClass("lg:h-full");
+
     // Assert prettifier-toolbar exists with Indent:, 2, 4, Sample, Clear
     const toolbar = screen.getByTestId("prettifier-toolbar");
     expect(toolbar).toBeInTheDocument();

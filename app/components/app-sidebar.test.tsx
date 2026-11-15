@@ -125,5 +125,17 @@ describe("AppSidebar", () => {
         expect(toolLinks[index + 1]).toHaveAttribute("title", tool.title);
       });
     });
+
+    it("expands dock container width and uses size-9 slots so all registered tools fit cleanly", () => {
+      renderSidebar();
+      const mobileNav = screen.getByRole("navigation", { name: "Mobile Navigation" });
+      expect(mobileNav).toHaveClass("w-[304px]", "max-w-[calc(100vw-2rem)]");
+
+      const dockLinks = mobileNav.querySelectorAll("a");
+      expect(dockLinks.length).toBe(tools.length + 1);
+      for (const link of dockLinks) {
+        expect(link).toHaveClass("size-9");
+      }
+    });
   });
 });

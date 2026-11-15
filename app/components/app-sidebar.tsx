@@ -127,13 +127,13 @@ export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLEle
       {/* Mobile Floating Bottom Island Dock */}
       <nav
         aria-label="Mobile Navigation"
-        className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 flex md:hidden items-center justify-between w-[280px] h-[52px] px-2 rounded-none border border-border bg-sidebar shadow-2xl select-none"
+        className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 flex md:hidden items-center justify-between w-[304px] max-w-[calc(100vw-2rem)] h-[52px] px-2 rounded-none border border-border bg-sidebar shadow-2xl select-none"
       >
         <Link
           to="/"
           onClick={handleLinkClick}
           className={cn(
-            "size-[38px] flex items-center justify-center rounded-none shrink-0 transition-all active:scale-95",
+            "size-9 flex items-center justify-center rounded-none shrink-0 transition-all active:scale-95",
             isHomeActive
               ? "bg-primary text-primary-foreground"
               : "text-muted-foreground hover:bg-muted"
@@ -157,7 +157,7 @@ export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLEle
                 rel="noopener noreferrer"
                 onClick={handleLinkClick}
                 className={cn(
-                  "size-[38px] flex items-center justify-center rounded-none shrink-0 transition-all active:scale-95",
+                  "size-9 flex items-center justify-center rounded-none shrink-0 transition-all active:scale-95",
                   "text-muted-foreground hover:bg-muted"
                 )}
                 title={tool.title}
@@ -174,7 +174,7 @@ export function AppSidebar({ className, ...props }: React.HTMLAttributes<HTMLEle
               to={`/tools/${tool.id}`}
               onClick={handleLinkClick}
               className={cn(
-                "size-[38px] flex items-center justify-center rounded-none shrink-0 transition-all active:scale-95",
+                "size-9 flex items-center justify-center rounded-none shrink-0 transition-all active:scale-95",
                 isActive
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-muted"
