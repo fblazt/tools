@@ -42,6 +42,13 @@ describe("tools-registry", () => {
       expect(tool?.title).toBe("JSON Prettifier");
     });
 
+    it("returns correct tool for mermaid-preview", () => {
+      const tool = toolsById.get("mermaid-preview");
+      expect(tool).toBeDefined();
+      expect(tool?.title).toBe("Mermaid Preview");
+      expect(tool?.category).toBe("Diagrams & Visualization");
+    });
+
     it("returns undefined for invalid ID", () => {
       expect(toolsById.get("nonexistent")).toBeUndefined();
     });

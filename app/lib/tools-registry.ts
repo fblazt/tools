@@ -1,6 +1,6 @@
 import { lazy, type ComponentType } from "react";
 import type { LucideIcon } from "lucide-react";
-import { QrCode, Shield, Image, Globe, Braces } from "lucide-react";
+import { QrCode, Shield, Image, Globe, Braces, Workflow } from "lucide-react";
 
 export interface ToolDefinition {
   id: string;
@@ -72,6 +72,19 @@ export const tools: ToolDefinition[] = [
     icon: Globe,
     component: lazy(() =>
       import("~/components/tools/json-api-tester").then((m) => ({ default: m.JsonApiTester }))
+    ),
+  },
+  {
+    id: "mermaid-preview",
+    title: "Mermaid Preview",
+    description: "Write Mermaid syntax and render diagrams locally with instant SVG & PNG export",
+    category: "Diagrams & Visualization",
+    keywords: ["mermaid", "diagram", "flowchart", "sequence", "er", "state", "svg", "png", "chart"],
+    icon: Workflow,
+    component: lazy(() =>
+      import("~/components/tools/mermaid-preview").then((module) => ({
+        default: module.MermaidPreview,
+      }))
     ),
   },
 ];
